@@ -22,3 +22,14 @@ def read_answers():
 
 def write_answers(export_list):
     write_csv(ANSWER_FILE_PATH, ANSWER_HEADER, export_list)
+
+
+def read_answers_by_question_id(question_id):
+    answers = read_answers()
+    match = []
+
+    for answer in answers:
+        if answer["id"] == question_id:
+            match.append(answer)
+
+    return match
