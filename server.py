@@ -4,6 +4,7 @@ import csv, os
 app = Flask(__name__)
 
 @app.route('/')
+@app.route('/list')
 def list_questions():
     return render_template('questions.html')
 
