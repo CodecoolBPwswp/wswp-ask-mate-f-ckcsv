@@ -4,10 +4,13 @@
 {% block content %}
   <h1>Answers</h1>
     {% for item in answer %}
-     <div class="card">
-        <div class="card-header">{{ answer[0]["id"] }}</div>
-        <div class="card-body">{{ answer[0]["message"] }}</div>
+    <div class="card ">
+        <div class="card-body">
+            {{ item["message"] }}
+        </div>
+        <div class="card-footer"></div>
     </div>
+
     {% endfor %}
 
 {% endblock %}
