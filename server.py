@@ -6,11 +6,12 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/list')
 def list_questions():
-    return "YOLO"
-    #questions = data_manager.
+    return render_template('questions.html')
 
-    #return render_template("questions.html", questions )
 
+@app.route('/question/<id>')
+def display_question()
+    pass
 
 
 if __name__ == '__main__':
