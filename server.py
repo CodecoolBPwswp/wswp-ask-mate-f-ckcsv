@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-import csv, os
+import data_manager
 
 app = Flask(__name__)
 
@@ -10,8 +10,9 @@ def list_questions():
 
 
 @app.route('/question/<id>')
-def display_question()
-    pass
+def display_question(id):
+    answers = data_manager.read_answers()
+    return render_template("answers.html", id=id, answers=answers[1])
 
 
 if __name__ == '__main__':
