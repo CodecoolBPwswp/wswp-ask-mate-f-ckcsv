@@ -20,5 +20,5 @@ def read_answers():
     return read_csv(ANSWER_FILE_PATH)
 
 
-def write_questions(export_list):
+def write_answers(export_list):
     write_csv(ANSWER_FILE_PATH, ANSWER_HEADER, export_list)
