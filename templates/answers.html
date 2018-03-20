@@ -3,6 +3,11 @@
 
 {% block content %}
   <h1>Answers</h1>
-    Welcome on my awesome homepage.<br>
-    {{answers["id"]}}
+    {% for item in answer %}
+     <div class="card">
+        <div class="card-header">{{ answer[0]["id"] }}</div>
+        <div class="card-body">{{ answer[0]["message"] }}</div>
+    </div>
+    {% endfor %}
+
 {% endblock %}
