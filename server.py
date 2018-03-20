@@ -7,6 +7,12 @@ app = Flask(__name__)
 def list_questions():
     return 'YOLO'
 
+
+@app.route('/question/<id>')
+def display_question()
+    pass
+
+
 if __name__ == '__main__':
     app.secret_key = "topsecret"
     app.run(debug=True, host='0.0.0.0', port=5000)
