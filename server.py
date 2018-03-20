@@ -15,8 +15,9 @@ def list_questions():
 
 
 @app.route('/question/<id>')
-def display_question():
-    pass
+def display_question(id):
+    answer = read_answers_by_question_id(id)
+    return render_template("answers.html", answer=answer)
 
 if __name__ == '__main__':
     app.secret_key = "topsecret"
