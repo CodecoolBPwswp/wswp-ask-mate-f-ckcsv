@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-import csv, os
+import csv, os, time
 from data_manager import *
 
 app = Flask(__name__)
@@ -17,13 +17,25 @@ def display_question(id):
     return render_template("answers.html", answer=answer)
 
 
-@app.route('/form')
+@app.route('/questionform')
+@app.route('/questionform', methods=['POST'])
 def form():
-    return render_template('form.html', h1='Create answer')
-
-@app.route('/form/<id>')
-def form():
-    return render_template('form.html', h1='Create answer')
+    if request.method == 'POST':
+        current_questions = read_questions()
+        new_row = dict()
+        new_row.update({
+            'title'         : request.form.get('title'),
+            'message'       : request.form.get('message'),
+            'id'            : len(current_questions),
+            'submisson_time': format(time.time(), '.0f'),
+            'view_number'   : 0,
+            'vote_number'   : 0,
+            'image'         : "-"
+        })
+        
+        write_questions(new_row)
+    
+    return render_template('question_form.html', h1='Create question')
 
 
 if __name__ == '__main__':

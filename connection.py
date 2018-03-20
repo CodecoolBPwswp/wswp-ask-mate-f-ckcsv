@@ -13,9 +13,7 @@ def read_csv(filepath):
     return read_list
 
 
-def write_csv(filepath, header, export_list):
-    with open(filepath, 'w') as story_file:
-        writer = csv.DictWriter(story_file, fieldnames=header, delimiter=',')
-        writer.writeheader()
-        for row in export_list:
-            writer.writerow(row)
+def write_csv(filepath, header, row):
+    with open(filepath, 'a', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=header, delimiter=',')
+        writer.writerow(row)
