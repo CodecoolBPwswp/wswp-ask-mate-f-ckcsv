@@ -10,7 +10,7 @@ def list_questions():
 
 
 @app.route('/question/<id>')
-def display_question()
+def display_question():
     pass
 
 
