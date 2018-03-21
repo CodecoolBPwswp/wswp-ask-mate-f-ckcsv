@@ -16,10 +16,10 @@ def list_questions():
 def display_question(id):
     answer = read_answers_by_question_id(id)
     question = read_question_by_id(id)
-    
+
     if not question:
         abort(404)
-    
+
     return render_template("answers.html", answer=answer, question=question)
 
 
@@ -101,12 +101,16 @@ def edit_question(question_id):
         'message': question['message']
     })
     
-    pass
 
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+
+@app.route('/question/<question_id>/<type>')
+def vote(question_id, type):
+    return redirect(url_for("display_question", id=question_id))
 
 
 if __name__ == '__main__':

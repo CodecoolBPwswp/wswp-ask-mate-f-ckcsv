@@ -61,3 +61,17 @@ def ordered(question_list, key, desc=True):
 
 def delete_questions():
     delete_csv_data(QUESTION_FILE_PATH, QUESTION_HEADER)
+
+
+def update_vote(question_id, answer_id, type):
+    answers = read_answers()
+
+    for answer in answers:
+        if answer["id"] == answer_id and answer["question_id"] == question_id:
+
+            if type == "vote-up":
+                answer["vote_number"] = str(int(answer["vote_number"]) + 1)
+            else:
+                answer["vote_number"] = str(int(answer["vote_number"]) - 1)
+
+            write_answer(answer)
