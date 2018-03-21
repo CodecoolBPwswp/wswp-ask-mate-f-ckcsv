@@ -4,13 +4,12 @@
 Questions
 {% endblock %}
 
-
 {% block content %}
-    <table>
+    <table class="table table-hover table-responsive-lg">
         <tr>
-            <th>Question ID</th>
-            <th>Question</th>
-            <th>Submission date</th>
+            <th style="min-width: 7rem">Question ID</th>
+            <th style="min-width: 7rem">Question</th>
+            <th style="min-width: 7rem">Submission date</th>
         </tr>
         {% for question in questions %}
         <tr>
