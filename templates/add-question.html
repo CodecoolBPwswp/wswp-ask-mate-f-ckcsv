@@ -8,18 +8,18 @@
             <h1>{{ h1 }}</h1>
         </div>
     </div>
-    <form action="{{ url_for('question_form') }}" method="POST" class="pl-4 pr-4">
+    <form method="POST" class="pl-4 pr-4">
         <fieldset>
             <div class="form-group p-0 col col-lg-3">
                 <label class="col-form-label" for="title">Title:</label>
                 <input name="title" type="text" class="form-control" id="title"
                        placeholder="At least 5 characters" required minlength="5" pattern=".{5,}"
-                       value="">
+                       value="{{ edit_data.get('title', '') if edit_data }}">
             </div>
             <div class="form-group p-0 col col-lg-6">
                 <label for="message">Question</label>
                 <textarea name="message" class="form-control" id="message" rows="6" placeholder="Enter your question"
-                          required></textarea>
+                          required>{{ edit_data.get('message', '') if edit_data }}</textarea>
             </div>
 
             <button type="submit" class="btn btn-primary mt-2">Submit</button>

@@ -16,10 +16,10 @@ def list_questions():
 def display_question(id):
     answer = read_answers_by_question_id(id)
     question = read_question_by_id(id)
-
+    
     if not question:
         abort(404)
-
+    
     return render_template("answers.html", answer=answer, question=question)
 
 
@@ -38,7 +38,7 @@ def question_form():
             'vote_number'   : 0,
             'image'         : ''
         })
-        write_questions(new_row)
+        write_question(new_row)
         return redirect(url_for('list_questions'))
     
     return render_template('add-question.html', h1='Create question')
@@ -58,18 +58,42 @@ def answer_form(question_id):
             'message'       : request.form.get('message'),
             'image'         : ''
         })
-        write_answers(new_row)
+        write_answer(new_row)
         return redirect('/question/{}'.format(question_id))
     
     return render_template('new-answer.html', h1='Create answer')
 
+
 @app.route('/question/<question_id>/edit')
+@app.route('/question/<question_id>/edit', methods=['POST'])
 def edit_question(question_id):
-    if request.method == 'POST':
-        pass
+    # current_questions = read_questions()
+    # question = []
+    #
+    # for row in current_questions:
+    #     if row['id'] == question_id:
+    #         question = row
+    #         break
+    #
+    # if request.method == 'POST':
+    #     question['title'] = request.form.get('title', '')
+    #     question['message'] = request.form.get('message', '')
+    #     question['submisson_time'] = format(time.time(), '.0f')
+    #
+    #     current_questions.pop(int(question_id))
+    #
+    #
+    #     write_question(question)
+    #
+    #     return redirect('/question/{}'.format(question_id))
+    #
+    # return render_template('add-question.html', edit_data={
+    #     'title'  : question['title'],
+    #     'message': question['message']
+    # })
     
-    
-    
+    pass
+
 
 @app.errorhandler(404)
 def page_not_found(e):
