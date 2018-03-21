@@ -8,7 +8,7 @@
             <h1>{{ h1 }}</h1>
         </div>
     </div>
-    <form action="/add-question" method="POST" class="pl-4 pr-4">
+    <form action="{{ url_for('form') }}" method="POST" class="pl-4 pr-4">
         <fieldset>
             <div class="form-group p-0 col col-lg-3">
                 <label class="col-form-label" for="title">Title:</label>

@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route('/list')
 def list_questions():
     questions = read_questions()
-
+    
     return render_template('questions.html', questions=questions)
 
 
@@ -19,8 +19,8 @@ def display_question(id):
     return render_template("answers.html", answer=answer)
 
 
-@app.route('/questionform')
-@app.route('/questionform', methods=['POST'])
+@app.route('/add-question')
+@app.route('/add-question', methods=['POST'])
 def form():
     if request.method == 'POST':
         current_questions = read_questions()
@@ -34,10 +34,10 @@ def form():
             'vote_number'   : 0,
             'image'         : "-"
         })
-        
         write_questions(new_row)
-    
-    return render_template('question_form.html', h1='Create question')
+        return redirect(url_for('list_questions'))
+    print('elelelelelelelelele')
+    return render_template('add-question.html', h1='Create question')
 
 
 if __name__ == '__main__':
