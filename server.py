@@ -60,6 +60,11 @@ def answer_form(question_id):
     return render_template('new-answer.html', h1='Create answer')
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
 if __name__ == '__main__':
     app.secret_key = "topsecret"
     answers = read_answers()
