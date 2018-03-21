@@ -8,7 +8,7 @@
             <h1>{{ h1 }}</h1>
         </div>
     </div>
-    <form action="{{ url_for('form') }}" method="POST" class="pl-4 pr-4">
+    <form action="{{ url_for('question_form') }}" method="POST" class="pl-4 pr-4">
         <fieldset>
             <div class="form-group p-0 col col-lg-3">
                 <label class="col-form-label" for="title">Title:</label>
@@ -17,7 +17,7 @@
                        value="">
             </div>
             <div class="form-group p-0 col col-lg-6">
-                <label for="message">User story:</label>
+                <label for="message">Question</label>
                 <textarea name="message" class="form-control" id="message" rows="6" placeholder="Enter your question"
                           required></textarea>
             </div>

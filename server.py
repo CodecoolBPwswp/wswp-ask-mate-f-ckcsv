@@ -21,7 +21,7 @@ def display_question(id):
 
 @app.route('/add-question')
 @app.route('/add-question', methods=['POST'])
-def form():
+def question_form():
     if request.method == 'POST':
         current_questions = read_questions()
         new_row = dict()
@@ -32,12 +32,32 @@ def form():
             'submisson_time': format(time.time(), '.0f'),
             'view_number'   : 0,
             'vote_number'   : 0,
-            'image'         : "-"
+            'image'         : ''
         })
         write_questions(new_row)
         return redirect(url_for('list_questions'))
-    print('elelelelelelelelele')
+    
     return render_template('add-question.html', h1='Create question')
+
+
+@app.route('/question/<int:question_id>/new-answer')
+@app.route('/question/<int:question_id>/new-answer', methods=['POST'])
+def answer_form(question_id):
+    if request.method == 'POST':
+        current_answers = read_answers()
+        new_row = dict()
+        new_row.update({
+            'id'            : len(current_answers),
+            'submisson_time': format(time.time(), '.0f'),
+            'vote_number'   : 0,
+            'question_id'   : question_id,
+            'message'       : request.form.get('message'),
+            'image'         : ''
+        })
+        write_answers(new_row)
+        return redirect('/question/{}'.format(question_id))
+    
+    return render_template('new-answer.html', h1='Create answer')
 
 
 if __name__ == '__main__':
