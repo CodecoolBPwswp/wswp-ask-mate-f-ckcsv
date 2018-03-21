@@ -8,7 +8,10 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/list')
 def list_questions():
-    questions = read_questions()
+    if request.form.get('ordered_by'):
+        questions = read_questions_correct_format(request.form.get('ordered_by'))
+    else:
+        questions = read_questions_correct_format()
     return render_template('questions.html', questions=questions)
 
 
