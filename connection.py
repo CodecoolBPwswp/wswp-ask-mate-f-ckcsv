@@ -9,7 +9,6 @@ def read_csv(filepath):
             read_list = []
             for row in readCSV:
                 read_list.append(row)
-            read_list.sort(key=lambda x:x['submisson_time'], reverse=True)
     except FileNotFoundError:
         read_list = []
     return read_list
