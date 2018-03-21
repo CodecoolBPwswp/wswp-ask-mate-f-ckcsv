@@ -5,22 +5,28 @@
 
     <div class="card bg-primary text-white mt-3">
         <div class="card-header">
-            <span class="card-title">{{ question["title"] }}</span>
+            <span class="font-weight-bold">{{ question["title"] }}</span>
         </div>
         <div class="card-body">
            <p class="card-text">{{ question["message"] }}</p>
         </div>
-        <div class="card-footer "></div>
+        <div class="card-footer ">
+            asked {{ question["submisson_time"] }}
+        </div>
     </div>
 
     {% for item in answer %}
-    <div class="card mt-3">
+    <div class="card mt-3 text-white">
         <div class="card-body">
             {{ item["message"] }}
         </div>
-        <div class="card-footer "></div>
+        <div class="card-footer ">
+            asked: {{ item["submisson_time"] }}
+        </div>
     </div>
 
     {% endfor %}
+
+<button class="btn btn-secondary mt-3 "><a class="text-white" href="{{ url_for('list_questions') }}">Go back</a></button>
 
 {% endblock %}
