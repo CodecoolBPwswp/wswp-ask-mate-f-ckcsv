@@ -9,7 +9,10 @@ ANSWER_HEADER = ['id', 'submisson_time', 'vote_number', 'question_id', 'message'
 
 
 def read_questions():
-    return read_csv(QUESTION_FILE_PATH)
+    question_list = read_csv(QUESTION_FILE_PATH)
+    for question in question_list:
+        question["submisson_time"] = datetime.datetime.fromtimestamp(int(question["submisson_time"])).strftime('%Y-%m-%d %H:%M:%S')
+    return question_list
 
 
 def write_questions(export_list):

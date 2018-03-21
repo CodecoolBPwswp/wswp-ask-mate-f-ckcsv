@@ -8,8 +8,8 @@ def read_csv(filepath):
             readCSV = csv.DictReader(csvfile, delimiter=',')
             read_list = []
             for row in readCSV:
-                row["submisson_time"] = datetime.datetime.fromtimestamp(int(row["submisson_time"])).strftime('%Y-%m-%d %H:%M:%S')
                 read_list.append(row)
+            read_list.sort(key=lambda x:x['submisson_time'], reverse=True)
     except FileNotFoundError:
         read_list = []
     return read_list
