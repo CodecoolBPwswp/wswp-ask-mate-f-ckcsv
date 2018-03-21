@@ -2,7 +2,7 @@
 {% block title %}Answers for {{id}}{% endblock %}
 
 {% block content %}
-
+    <a href="{{url_for('display_question', id=question['id'])}}/new-answer"><button class="btn btn-primary text-white">Add Answer</button></a>
     <div class="card bg-primary text-white mt-3">
         <div class="card-header">
             <span class="font-weight-bold">{{ question["title"] }}</span>
