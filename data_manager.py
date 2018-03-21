@@ -33,3 +33,13 @@ def read_answers_by_question_id(question_id):
             match.append(answer)
 
     return match
+
+
+def read_question_by_id(id):
+    questions = read_questions()
+
+    for question in questions:
+        if question["id"] == id:
+            return question
+
+    return []

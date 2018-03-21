@@ -2,7 +2,17 @@
 {% block title %}Answers for {{id}}{% endblock %}
 
 {% block content %}
-  <h1>Answers</h1>
+
+    <div class="card bg-primary text-white mt-3">
+        <div class="card-header">
+            <span class="card-title">{{ question["title"] }}</span>
+        </div>
+        <div class="card-body">
+           <p class="card-text">{{ question["message"] }}</p>
+        </div>
+        <div class="card-footer "></div>
+    </div>
+
     {% for item in answer %}
     <div class="card mt-3">
         <div class="card-body">
