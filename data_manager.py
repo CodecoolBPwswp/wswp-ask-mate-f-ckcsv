@@ -1,4 +1,4 @@
-import os
+import os, shutil
 from connection import *
 
 QUESTION_FILE_PATH = os.getenv('QUESTION_FILE_PATH') if 'QUESTION_FILE_PATH' in os.environ else 'question.csv'
@@ -60,4 +60,4 @@ def ordered(question_list, key, desc=True):
 
 
 def delete_questions():
-    delete_csv(QUESTION_FILE_PATH, QUESTION_HEADER)
+    delete_csv_data(QUESTION_FILE_PATH, QUESTION_HEADER)

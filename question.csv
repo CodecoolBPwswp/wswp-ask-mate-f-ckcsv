@@ -1,6 +1,9 @@
 id,submisson_time,view_number,vote_number,title,message,image
-0,1493368154,29,7,"How to make lists in Python?","I am totally new to this, any hints?",
-1,1493068124,15,9,"Wordpress loading multiple jQuery Versions","I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
+0,1493368154,29,7,How to make lists in Python?,"I am totally new to this, any hints?",
+2,1493015432,1364,57,Drawing canvas with an image picked with Cordova Camera Plugin,"I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
+
+This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
+1,1521640215,15,9,333333Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
 
 I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
 
@@ -8,15 +11,4 @@ BUT in my theme i also using jquery via webpack so the loading order is now foll
 
 jquery
 booklet
-app.js (bundled file with webpack, including jquery)","images/image1.png"
-2,1493015432,1364,57,"Drawing canvas with an image picked with Cordova Camera Plugin","I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
-
-This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
-3,1521557847,0,0,kecske,fecske,-
-4,1521558237,0,0,picike,pacika,-
-5,1521626440,0,0,fuck this shit,gdfgdfgfdf,-
-6,1521626498,0,0,dfgadfgfdg,<h1>hali</h1>,-
-7,1521635377,0,0,dfgadfgfdg,<h1>hali</h1>,
-8,1521635481,0,0,sdfgh,dfghjk,
-8,2018-03-21 13:31:21,0,0,sdfgh3333333333333333333,dfghjk,
-3,1521557847,0,0,3 kecske,fecske,-
+app.js (bundled file with webpack, including jquery)",images/image1.png

@@ -67,30 +67,39 @@ def answer_form(question_id):
 @app.route('/question/<question_id>/edit')
 @app.route('/question/<question_id>/edit', methods=['POST'])
 def edit_question(question_id):
-    # current_questions = read_questions()
-    # question = []
-    #
-    # for row in current_questions:
-    #     if row['id'] == question_id:
-    #         question = row
-    #         break
-    #
-    # if request.method == 'POST':
-    #     question['title'] = request.form.get('title', '')
-    #     question['message'] = request.form.get('message', '')
-    #     question['submisson_time'] = format(time.time(), '.0f')
-    #
-    #     current_questions.pop(int(question_id))
-    #
-    #
-    #     write_question(question)
-    #
-    #     return redirect('/question/{}'.format(question_id))
-    #
-    # return render_template('add-question.html', edit_data={
-    #     'title'  : question['title'],
-    #     'message': question['message']
-    # })
+    current_questions = read_questions()
+    question = []
+    index = -1
+    
+    for i, row in enumerate(current_questions):
+        if row['id'] == question_id:
+            question = row
+            index = i
+            break
+    
+    if request.method == 'POST':
+        try:
+            question['title'] = request.form.get('title', '')
+            question['message'] = request.form.get('message', '')
+            question['submisson_time'] = format(time.time(), '.0f')
+            
+            current_questions.pop(index)
+            
+            delete_questions()
+            
+            for row in current_questions:
+                write_question(row)
+                
+            write_question(question)
+            
+            return redirect('/question/{}'.format(question_id))
+        except Exception as e:
+            print(e)
+    
+    return render_template('add-question.html', edit_data={
+        'title'  : question['title'],
+        'message': question['message']
+    })
     
     pass
 
