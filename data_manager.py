@@ -12,6 +12,7 @@ def read_questions():
     question_list = read_csv(QUESTION_FILE_PATH)
     for question in question_list:
         question["submisson_time"] = datetime.datetime.fromtimestamp(int(question["submisson_time"])).strftime('%Y-%m-%d %H:%M:%S')
+        question_list.sort(key=lambda x: x["submisson_time"], reverse=True)
     return question_list
 
 
@@ -46,3 +47,6 @@ def read_question_by_id(id):
             return question
 
     return []
+
+def ordered(question_list, key, desc=True):
+    return question_list.sort(key=lambda x:x[key], reverse=desc)
