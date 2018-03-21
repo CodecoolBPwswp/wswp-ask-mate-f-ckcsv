@@ -16,7 +16,8 @@ def list_questions():
 @app.route('/question/<id>')
 def display_question(id):
     answer = read_answers_by_question_id(id)
-    return render_template("answers.html", answer=answer)
+    question = read_question_by_id(id)
+    return render_template("answers.html", answer=answer, question=question)
 
 
 @app.route('/add-question')
