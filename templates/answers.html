@@ -21,9 +21,12 @@
             {{ item["message"] }}
         </div>
         <div class="card-footer ">
-            <span class="btn btn-primary">{{ item["vote_number"] }}</span>
-            <a href=""> VOTE UP</a>
-            <a href=""> VOTE DOWN</a>
+            <form action="{{ url_for('display_question', id=question['id']) }}/vote-up">
+                <span class="btn btn-primary">{{ item["vote_number"] }}</span>
+                <a href="{{ url_for('display_question', id=question['id']) }}/vote-up"> VOTE UP</a>
+                <a href=""> VOTE DOWN</a>
+                <input type="hidden" name="answer_id">
+            </form>
             asked: {{ item["submisson_time"] }}
 
         </div>
