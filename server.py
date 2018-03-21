@@ -8,7 +8,9 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/list')
 def list_questions():
-    return render_template('questions.html')
+    questions = read_questions()
+
+    return render_template('questions.html', questions=questions)
 
 
 @app.route('/question/<id>')
