@@ -32,7 +32,7 @@ def read_answers_by_question_id(question_id):
     match = []
 
     for answer in answers:
-        if answer["id"] == question_id:
+        if answer["question_id"] == question_id:
             match.append(answer)
 
     return match
