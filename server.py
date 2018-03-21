@@ -59,6 +59,13 @@ def answer_form(question_id):
     
     return render_template('new-answer.html', h1='Create answer')
 
+@app.route('/question/<question_id>/edit')
+def edit_question(question_id):
+    if request.method == 'POST':
+        pass
+    
+    
+    
 
 if __name__ == '__main__':
     app.secret_key = "topsecret"
