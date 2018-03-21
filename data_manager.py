@@ -12,7 +12,7 @@ def read_questions():
     question_list = read_csv(QUESTION_FILE_PATH)
     for question in question_list:
         question["submisson_time"] = datetime.datetime.fromtimestamp(int(question["submisson_time"])).strftime('%Y-%m-%d %H:%M:%S')
-        question_list.sort(key=lambda x: x["submisson_time"], reverse=True)
+        ordered(question_list, "submisson_time")
     return question_list
 
 
