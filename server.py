@@ -19,10 +19,10 @@ def list_questions():
 def display_question(id):
     answer = read_answers_by_question_id(id)
     question = read_question_by_id(id)
-    
+
     if not question:
         abort(404)
-    
+
     return render_template("answers.html", answer=answer, question=question)
 
 
@@ -70,37 +70,50 @@ def answer_form(question_id):
 @app.route('/question/<question_id>/edit')
 @app.route('/question/<question_id>/edit', methods=['POST'])
 def edit_question(question_id):
-    # current_questions = read_questions()
-    # question = []
-    #
-    # for row in current_questions:
-    #     if row['id'] == question_id:
-    #         question = row
-    #         break
-    #
-    # if request.method == 'POST':
-    #     question['title'] = request.form.get('title', '')
-    #     question['message'] = request.form.get('message', '')
-    #     question['submisson_time'] = format(time.time(), '.0f')
-    #
-    #     current_questions.pop(int(question_id))
-    #
-    #
-    #     write_question(question)
-    #
-    #     return redirect('/question/{}'.format(question_id))
-    #
-    # return render_template('add-question.html', edit_data={
-    #     'title'  : question['title'],
-    #     'message': question['message']
-    # })
+    current_questions = read_questions()
+    question = []
+    index = -1
     
-    pass
+    for i, row in enumerate(current_questions):
+        if row['id'] == question_id:
+            question = row
+            index = i
+            break
+    
+    if request.method == 'POST':
+        try:
+            question['title'] = request.form.get('title', '')
+            question['message'] = request.form.get('message', '')
+            question['submisson_time'] = format(time.time(), '.0f')
+            
+            current_questions.pop(index)
+            
+            delete_questions()
+            
+            for row in current_questions:
+                write_question(row)
+                
+            write_question(question)
+            
+            return redirect('/question/{}'.format(question_id))
+        except Exception as e:
+            print(e)
+    
+    return render_template('add-question.html', edit_data={
+        'title'  : question['title'],
+        'message': question['message']
+    })
+    
 
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+
+@app.route('/question/<question_id>/<type>')
+def vote(question_id, type):
+    return redirect(url_for("display_question", id=question_id))
 
 
 if __name__ == '__main__':

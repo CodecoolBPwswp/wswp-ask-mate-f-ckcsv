@@ -1,4 +1,4 @@
-import os
+import os, shutil
 from connection import *
 
 QUESTION_FILE_PATH = os.getenv('QUESTION_FILE_PATH') if 'QUESTION_FILE_PATH' in os.environ else 'question.csv'
@@ -62,4 +62,18 @@ def ordered(question_list, key, desc=True):
 
 
 def delete_questions():
-    delete_csv(QUESTION_FILE_PATH, QUESTION_HEADER)
+    delete_csv_data(QUESTION_FILE_PATH, QUESTION_HEADER)
+
+
+def update_vote(question_id, answer_id, type):
+    answers = read_answers()
+
+    for answer in answers:
+        if answer["id"] == answer_id and answer["question_id"] == question_id:
+
+            if type == "vote-up":
+                answer["vote_number"] = str(int(answer["vote_number"]) + 1)
+            else:
+                answer["vote_number"] = str(int(answer["vote_number"]) - 1)
+
+            write_answer(answer)

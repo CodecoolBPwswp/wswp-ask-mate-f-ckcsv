@@ -18,3 +18,9 @@ def write_csv(filepath, header, row):
     with open(filepath, 'a', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=header, delimiter=',')
         writer.writerow(row)
+
+
+def delete_csv_data(filepath, header):
+    with open(filepath, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=header, delimiter=',')
+        writer.writeheader()
