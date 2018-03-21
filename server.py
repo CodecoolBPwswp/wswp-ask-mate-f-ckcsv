@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, abort
 import csv, os, time
 from data_manager import *
 
@@ -16,6 +16,10 @@ def list_questions():
 def display_question(id):
     answer = read_answers_by_question_id(id)
     question = read_question_by_id(id)
+
+    if not question:
+        abort(404)
+
     return render_template("answers.html", answer=answer, question=question)
 
 
@@ -59,6 +63,13 @@ def answer_form(question_id):
     
     return render_template('new-answer.html', h1='Create answer')
 
+@app.route('/question/<question_id>/edit')
+def edit_question(question_id):
+    if request.method == 'POST':
+        pass
+    
+    
+    
 
 @app.errorhandler(404)
 def page_not_found(e):
