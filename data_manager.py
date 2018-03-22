@@ -1,6 +1,5 @@
 import os, shutil
 from connection import *
-from file_manager import *
 
 QUESTION_FILE_PATH = os.getenv('QUESTION_FILE_PATH') if 'QUESTION_FILE_PATH' in os.environ else 'question.csv'
 QUESTION_HEADER = ['id', 'submisson_time', 'view_number', 'vote_number', 'title', 'message', 'image']
@@ -8,13 +7,16 @@ QUESTION_HEADER = ['id', 'submisson_time', 'view_number', 'vote_number', 'title'
 ANSWER_FILE_PATH = os.getenv('ANSWER_FILE_PATH') if 'ANSWER_FILE_PATH' in os.environ else 'answer.csv'
 ANSWER_HEADER = ['id', 'submisson_time', 'vote_number', 'question_id', 'message', 'image']
 
+UPLOAD_FOLDER = '/images/'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
 
 def read_questions_correct_format(ordered_by=None, desc=True):
     question_list = read_csv(QUESTION_FILE_PATH)
     for question in question_list:
         question["submisson_time"] = datetime.datetime.fromtimestamp(int(question["submisson_time"])).strftime(
                 '%Y-%m-%d %H:%M:%S')
-
+    
     if not ordered_by:
         ordered(question_list, "submisson_time")
     else:
@@ -73,17 +75,17 @@ def delete_questions():
 
 def update_vote(question_id, answer_id, type):
     answers = read_answers()
-
+    
     delete_csv_data(ANSWER_FILE_PATH, ANSWER_HEADER)
-
+    
     for answer in answers:
         if answer["id"] == answer_id and int(answer["question_id"]) == question_id:
-
+            
             if type == "vote-up":
                 answer["vote_number"] = str(int(answer["vote_number"]) + 1)
             else:
                 answer["vote_number"] = str(int(answer["vote_number"]) - 1)
-
+        
         write_answer(answer)
 
 
@@ -96,3 +98,8 @@ def read_answers_correct_format(ordered_by=None):
                 '%Y-%m-%d %H:%M:%S')
         ordered(answer_list, ordered_by)
     return answer_list
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
