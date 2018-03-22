@@ -9,21 +9,19 @@ Questions
     <table>
         <tr>
             <th>Question ID</th>
-            <form action="/", method="get">
-                <th><button name="order_by" type="submit" value="title">Question</button></th>
-                <th><button name="order_by" type="submit" value="view_number">View Number</button></th>
-                <th><button name="order_by" type="submit" value="vote_number">Vote Number</button></th>
-                <th><button name="order_by" type="submit" value="submisson_time">Submission time</button></th>
-            </form>
+            <th><a href="{{ url_for('questions.html') }}?order=question"></a>Question</th>
+            <th><a href="{{ url_for('questions.html') }}?order=view_number"></a>View Number</th>
+            <th><a href="{{ url_for('questions.html') }}?order=vote_number"></a>Vote Number</th>
+            <th><a href="{{ url_for('questions.html') }}?order=submisson_time"></a>Submission time</th>
 
         </tr>
         {% for question in questions %}
         <tr>
-            <td>{{ question["id"] }}</td>
-            <td><a href="/question/{{  question['id'] }}">{{ question["title"] }}</a></td>
-            <td>{{ question["view_number"] }}</td>
-            <td>{{ question["vote_number"] }}</td>
-            <td>{{ question["submisson_time"] }}</td>
+            <td>{{ question.id }}</td>
+            <td><a href="/question/{{  question.id }}">{{ question.title }}</a></td>
+            <td>{{ question.view_number }}</td>
+            <td>{{ question.vote_number }}</td>
+            <td>{{ question.submisson_time }}</td>
         </tr>
         {%  endfor %}
     </table>

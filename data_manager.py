@@ -8,14 +8,16 @@ ANSWER_FILE_PATH = os.getenv('ANSWER_FILE_PATH') if 'ANSWER_FILE_PATH' in os.env
 ANSWER_HEADER = ['id', 'submisson_time', 'vote_number', 'question_id', 'message', 'image']
 
 
-def read_questions_correct_format(ordered_by=None):
-    if not ordered_by:
-        ordered_by = "submisson_time"
+def read_questions_correct_format(ordered_by):
     question_list = read_csv(QUESTION_FILE_PATH)
     for question in question_list:
         question["submisson_time"] = datetime.datetime.fromtimestamp(int(question["submisson_time"])).strftime(
                 '%Y-%m-%d %H:%M:%S')
-        ordered(question_list, ordered_by )
+
+    if not ordered_by:
+        ordered(question_list, "submisson_time")
+    else:
+        ordered(question_list, ordered_by)
     return question_list
 
 
