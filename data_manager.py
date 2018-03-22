@@ -9,7 +9,7 @@ ANSWER_FILE_PATH = os.getenv('ANSWER_FILE_PATH') if 'ANSWER_FILE_PATH' in os.env
 ANSWER_HEADER = ['id', 'submisson_time', 'vote_number', 'question_id', 'message', 'image']
 
 
-def read_questions_correct_format(ordered_by=None):
+def read_questions_correct_format(ordered_by=None, desc=True):
     question_list = read_csv(QUESTION_FILE_PATH)
     for question in question_list:
         question["submisson_time"] = datetime.datetime.fromtimestamp(int(question["submisson_time"])).strftime(
@@ -18,7 +18,7 @@ def read_questions_correct_format(ordered_by=None):
     if not ordered_by:
         ordered(question_list, "submisson_time")
     else:
-        ordered(question_list, ordered_by)
+        ordered(question_list, ordered_by, desc)
     return question_list
 
 
@@ -61,7 +61,10 @@ def read_question_by_id(id):
 
 
 def ordered(question_list, key, desc=True):
-    return question_list.sort(key=lambda x: x[key], reverse=desc)
+    try:
+        return question_list.sort(key=lambda x: int(x[key]), reverse=desc)
+    except ValueError:
+        return question_list.sort(key=lambda x: x[key], reverse=desc)
 
 
 def delete_questions():
@@ -91,5 +94,5 @@ def read_answers_correct_format(ordered_by=None):
     for answer in answer_list:
         answer["submisson_time"] = datetime.datetime.fromtimestamp(int(answer["submisson_time"])).strftime(
                 '%Y-%m-%d %H:%M:%S')
-        ordered(answer_list, ordered_by )
+        ordered(answer_list, ordered_by)
     return answer_list

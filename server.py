@@ -4,12 +4,22 @@ from data_manager import *
 
 app = Flask(__name__)
 
+column = "submisson_time"
+desc = False
 
 @app.route('/')
 @app.route('/list')
 def list_questions():
-    questions = read_questions_correct_format(request.args.get('order'))
+    global column
+    global desc
+    order = request.args.get('order')
+    if column == order:
+        questions = read_questions_correct_format(request.args.get('order'), desc)
+        desc = not desc
+    else:
+        questions = read_questions_correct_format(order)
 
+    column = order
     return render_template('questions.html', questions=questions)
 
 
