@@ -2,32 +2,33 @@
 {% block title %}Answers for {{id}}{% endblock %}
 
 {% block content %}
-    <a href="{{url_for('display_question', id=question['id'])}}/new-answer"><button class="btn btn-primary text-white">Add Answer</button></a>
+    <a href="{{url_for('answer_form', question_id=question.id)}}"><button class="btn btn-primary text-white">Add Answer</button></a>
+    <a href="{{url_for('edit_question', question_id=question.id)}}"><button class="btn btn-secondary text-white">Edit Answer</button></a>
     <div class="card bg-primary text-white mt-3">
         <div class="card-header">
-            <span class="font-weight-bold">{{ question["title"] }}</span>
+            <span class="font-weight-bold">{{ question.title }}</span>
         </div>
         <div class="card-body">
-           <p class="card-text">{{ question["message"] }}</p>
+           <p class="card-text">{{ question.message }}</p>
         </div>
         <div class="card-footer ">
-            asked {{ question["submisson_time"] }}
+            asked {{ question.submisson_time }}
         </div>
     </div>
 
     {% for item in answer %}
     <div class="card mt-3 text-white">
         <div class="card-body">
-            {{ item["message"] }}
+            {{ item.message }}
         </div>
         <div class="card-footer ">
-            <form action="{{ url_for('display_question', id=question['id']) }}/vote-up">
+            <form method="post" action="{{ url_for('display_question', id=question.id) }}/vote-up">
                 <span class="btn btn-primary">{{ item["vote_number"] }}</span>
-                <a href="{{ url_for('display_question', id=question['id']) }}/vote-up"> VOTE UP</a>
-                <a href=""> VOTE DOWN</a>
-                <input type="hidden" name="answer_id">
+                <input type="hidden" name="answer_id" value="{{ item.id }}">
+                <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-up">VOTE UP</button>
+                <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-down">VOTE DOWN</button>
             </form>
-            asked: {{ item["submisson_time"] }}
+            asked: {{ item.submisson_time }}
 
         </div>
     </div>

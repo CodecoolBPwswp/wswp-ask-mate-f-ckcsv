@@ -111,8 +111,10 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-@app.route('/question/<question_id>/<type>')
+@app.route('/question/<question_id>/<type>', methods=['POST'])
 def vote(question_id, type):
+    answer_id = request.form["answer_id"]
+    update_vote(question_id, answer_id, type)
     return redirect(url_for("display_question", id=question_id))
 
 

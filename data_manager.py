@@ -68,6 +68,8 @@ def delete_questions():
 def update_vote(question_id, answer_id, type):
     answers = read_answers()
 
+    delete_csv_data(ANSWER_FILE_PATH, ANSWER_HEADER)
+
     for answer in answers:
         if answer["id"] == answer_id and answer["question_id"] == question_id:
 
@@ -76,4 +78,4 @@ def update_vote(question_id, answer_id, type):
             else:
                 answer["vote_number"] = str(int(answer["vote_number"]) - 1)
 
-            write_answer(answer)
+        write_answer(answer)
