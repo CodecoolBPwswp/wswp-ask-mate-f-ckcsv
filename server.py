@@ -15,7 +15,7 @@ def list_questions():
     return render_template('questions.html', questions=questions)
 
 
-@app.route('/question/<id>')
+@app.route('/question/<int:id>')
 def display_question(id):
     answer = read_answers_by_question_id(id)
     question = read_question_by_id(id)
@@ -111,7 +111,7 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-@app.route('/question/<question_id>/<type>', methods=['POST'])
+@app.route('/question/<int:question_id>/<type>', methods=['POST'])
 def vote(question_id, type):
     answer_id = request.form["answer_id"]
     update_vote(question_id, answer_id, type)

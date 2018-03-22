@@ -3,7 +3,7 @@
 
 {% block content %}
     <a href="{{url_for('answer_form', question_id=question.id)}}"><button class="btn btn-primary text-white">Add Answer</button></a>
-    <a href="{{url_for('edit_question', question_id=question.id)}}"><button class="btn btn-secondary text-white">Edit Answer</button></a>
+    <a href="{{url_for('edit_question', question_id=question.id)}}"><button class="btn btn-secondary text-white">Edit Question</button></a>
     <div class="card bg-primary text-white mt-3">
         <div class="card-header">
             <span class="font-weight-bold">{{ question.title }}</span>
