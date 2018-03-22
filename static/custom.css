@@ -1,3 +1,11 @@
 th {
     min-width: 8rem;
 }
+
+.asked {
+    float: right;
+}
+
+#answer_form {
+    float: left;
+}
