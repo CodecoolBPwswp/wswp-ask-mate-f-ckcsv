@@ -7,6 +7,9 @@ QUESTION_HEADER = ['id', 'submisson_time', 'view_number', 'vote_number', 'title'
 ANSWER_FILE_PATH = os.getenv('ANSWER_FILE_PATH') if 'ANSWER_FILE_PATH' in os.environ else 'answer.csv'
 ANSWER_HEADER = ['id', 'submisson_time', 'vote_number', 'question_id', 'message', 'image']
 
+UPLOAD_FOLDER = '/static/'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
 
 def read_questions_correct_format(ordered_by=None, desc=True):
     question_list = read_csv(QUESTION_FILE_PATH)
@@ -100,3 +103,7 @@ def read_answers_correct_format(ordered_by=None):
         ordered(answer_list, ordered_by)
     return answer_list
 
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

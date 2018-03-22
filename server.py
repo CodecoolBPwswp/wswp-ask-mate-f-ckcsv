@@ -1,11 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, abort
 import csv, os, time
 from data_manager import *
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 column = "submisson_time"
 desc = False
+
 
 @app.route('/')
 @app.route('/list')
@@ -18,7 +21,7 @@ def list_questions():
         desc = not desc
     else:
         questions = read_questions_correct_format(order)
-
+    
     column = order
     return render_template('questions.html', questions=questions)
 
@@ -27,10 +30,10 @@ def list_questions():
 def display_question(id):
     answer = read_answers_by_question_id(id)
     question = read_question_by_id(id)
-
+    
     if not question:
         abort(404)
-
+    
     return render_template("answers.html", answer=answer, question=question)
 
 
@@ -61,13 +64,20 @@ def answer_form(question_id):
     if request.method == 'POST':
         current_answers = read_answers()
         new_row = dict()
+        filename = ''
+        
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.getcwd() + os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        
         new_row.update({
             'id'            : len(current_answers),
             'submisson_time': format(time.time(), '.0f'),
             'vote_number'   : 0,
             'question_id'   : question_id,
             'message'       : request.form.get('message'),
-            'image'         : ''
+            'image'         : UPLOAD_FOLDER+filename if file else ''
         })
         write_answer(new_row)
         return redirect('/question/{}'.format(question_id))
@@ -100,7 +110,7 @@ def edit_question(question_id):
             
             for row in current_questions:
                 write_question(row)
-                
+            
             write_question(question)
             
             return redirect('/question/{}'.format(question_id))
@@ -111,7 +121,6 @@ def edit_question(question_id):
         'title'  : question['title'],
         'message': question['message']
     })
-    
 
 
 @app.errorhandler(404)

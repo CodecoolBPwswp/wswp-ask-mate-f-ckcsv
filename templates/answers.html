@@ -21,22 +21,23 @@
     <div class="card mt-3 text-white">
         <div class="card-body">
             {{ item.message }}
+            <img src="{{ item.image }}" class="rounded img-fluid d-block answer_img" alt="">
         </div>
         <div class="card-footer ">
-            <form method="post" action="{{ url_for('display_question', id=question.id) }}/vote-up">
+            <form method="post" action="{{ url_for('display_question', id=question.id) }}/vote-up" id="answer_form">
                 <span class="btn btn-primary">{{ item["vote_number"] }}</span>
                 <input type="hidden" name="answer_id" value="{{ item.id }}">
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-up">VOTE UP</button>
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-down">VOTE DOWN</button>
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('delete_answer', id=question.id) }}">DELETE</button>
             </form>
-            asked: {{ item.submisson_time }}
+            <span class="asked">asked: {{ item.submisson_time }}</span>
 
         </div>
     </div>
 
     {% endfor %}
 
-<a class="text-white" href="{{ url_for('list_questions') }}"><button class="btn btn-secondary mt-3 ">Go back</button></a>
+    <a href="{{url_for('answer_form', question_id=question.id)}}" class="floor"><button class="btn btn-primary text-white mt-3">Add Answer</button></a>
 
 {% endblock %}

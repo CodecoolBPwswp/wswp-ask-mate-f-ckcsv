@@ -6,8 +6,8 @@ Questions
 
 
 {% block content %}
-    <table>
-        <tr>
+    <table class="table table-hover table-responsive-lg">
+        <tr class="bg-dark">
             <th>Question ID</th>
             <th><a href="{{ url_for('list_questions') }}?order=title">Question</a></th>
             <th><a href="{{ url_for('list_questions') }}?order=view_number">View Number</a></th>
