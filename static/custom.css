@@ -9,3 +9,7 @@ th {
 #answer_form {
     float: left;
 }
+
+.answer_img {
+    width: 50%;
+}

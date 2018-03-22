@@ -7,7 +7,7 @@ QUESTION_HEADER = ['id', 'submisson_time', 'view_number', 'vote_number', 'title'
 ANSWER_FILE_PATH = os.getenv('ANSWER_FILE_PATH') if 'ANSWER_FILE_PATH' in os.environ else 'answer.csv'
 ANSWER_HEADER = ['id', 'submisson_time', 'vote_number', 'question_id', 'message', 'image']
 
-UPLOAD_FOLDER = '/images/'
+UPLOAD_FOLDER = '/static/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 
