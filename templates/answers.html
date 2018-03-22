@@ -19,7 +19,7 @@
     {% for item in answer %}
     <div class="card mt-3 text-white">
         <div class="card-body">
-            {{ item.message }}
+            {{ item.message|safe }}
             <img src="{{ item.image }}" class="rounded img-fluid d-block answer_img" alt="">
         </div>
         <div class="card-footer ">
