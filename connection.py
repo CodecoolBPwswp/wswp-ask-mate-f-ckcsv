@@ -1,7 +1,6 @@
 import csv
 import datetime
 
-
 def read_csv(filepath):
     try:
         with open(filepath) as csvfile:

@@ -70,6 +70,10 @@ def delete_questions():
     delete_csv_data(QUESTION_FILE_PATH, QUESTION_HEADER)
 
 
+def delete_answers():
+    delete_csv_data(ANSWER_FILE_PATH, ANSWER_HEADER)
+
+
 def update_vote(question_id, answer_id, type):
     answers = read_answers()
 
@@ -95,3 +99,4 @@ def read_answers_correct_format(ordered_by=None):
                 '%Y-%m-%d %H:%M:%S')
         ordered(answer_list, ordered_by)
     return answer_list
+

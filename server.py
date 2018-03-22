@@ -126,6 +126,34 @@ def vote(question_id, type):
     return redirect(url_for("display_question", id=question_id))
 
 
+@app.route('/question/<question_id>/delete')
+def delete_question(question_id):
+    current_questions = read_questions()
+    for i, row in enumerate(current_questions):
+        if row['id'] == question_id:
+            del current_questions[i]
+
+            delete_questions()
+
+            for row in current_questions:
+                write_question(row)
+    return redirect(url_for("list_questions"))
+
+
+@app.route('/delete_answer', methods=['POST'])
+def delete_answer(answer_id):
+    current_answers = read_answers()
+    for i, row in enumerate(current_answers):
+        if row['id'] == answer_id:
+            del current_answers[i]
+
+            delete_answers()
+
+            for row in current_answers:
+                write_answer(row)
+    return redirect(url_for("list_questions"))
+
+
 if __name__ == '__main__':
     app.secret_key = "topsecret"
     answers = read_answers()
