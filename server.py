@@ -1,15 +1,22 @@
-from flask import Flask, render_template, request, redirect, url_for, abort
+from flask import Flask, render_template, request, redirect, url_for, abort, session
 import csv, os, time
 from data_manager import *
 
 app = Flask(__name__)
 
+column = "submisson_time"
 
 @app.route('/')
 @app.route('/list')
 def list_questions():
-    questions = read_questions_correct_format(request.args.get('order'))
+    global column
+    order = request.args.get('order')
+    if column == order:
+        questions = read_questions_correct_format(request.args.get('order'), False)
+    else:
+        questions = read_questions_correct_format(order)
 
+    column = order
     return render_template('questions.html', questions=questions)
 
 
