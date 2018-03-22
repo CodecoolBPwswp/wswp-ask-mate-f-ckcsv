@@ -3,6 +3,7 @@ import csv, os, time
 from data_manager import *
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 column = "submisson_time"
 desc = False
