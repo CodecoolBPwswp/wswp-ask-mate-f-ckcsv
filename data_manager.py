@@ -39,21 +39,21 @@ def write_answer(export_data):
 
 
 def read_answers_by_question_id(question_id):
-    answers = read_answers()
+    answers = read_answers_correct_format()
     match = []
     
     for answer in answers:
-        if answer["question_id"] == question_id:
+        if int(answer["question_id"]) == question_id:
             match.append(answer)
     
     return match
 
 
 def read_question_by_id(id):
-    questions = read_questions()
+    questions = read_questions_correct_format()
     
     for question in questions:
-        if question["id"] == id:
+        if int(question["id"]) == id:
             return question
     
     return []
@@ -70,12 +70,25 @@ def delete_questions():
 def update_vote(question_id, answer_id, type):
     answers = read_answers()
 
+    delete_csv_data(ANSWER_FILE_PATH, ANSWER_HEADER)
+
     for answer in answers:
-        if answer["id"] == answer_id and answer["question_id"] == question_id:
+        if answer["id"] == answer_id and int(answer["question_id"]) == question_id:
 
             if type == "vote-up":
                 answer["vote_number"] = str(int(answer["vote_number"]) + 1)
             else:
                 answer["vote_number"] = str(int(answer["vote_number"]) - 1)
 
-            write_answer(answer)
+        write_answer(answer)
+
+
+def read_answers_correct_format(ordered_by=None):
+    if not ordered_by:
+        ordered_by = "submisson_time"
+    answer_list = read_csv(ANSWER_FILE_PATH)
+    for answer in answer_list:
+        answer["submisson_time"] = datetime.datetime.fromtimestamp(int(answer["submisson_time"])).strftime(
+                '%Y-%m-%d %H:%M:%S')
+        ordered(answer_list, ordered_by )
+    return answer_list
