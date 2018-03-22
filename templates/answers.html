@@ -22,13 +22,13 @@
             {{ item.message }}
         </div>
         <div class="card-footer ">
-            <form method="post" action="{{ url_for('display_question', id=question.id) }}/vote-up">
+            <form method="post" action="{{ url_for('display_question', id=question.id) }}/vote-up" id="answer_form">
                 <span class="btn btn-primary">{{ item["vote_number"] }}</span>
                 <input type="hidden" name="answer_id" value="{{ item.id }}">
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-up">VOTE UP</button>
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-down">VOTE DOWN</button>
             </form>
-            asked: {{ item.submisson_time }}
+            <span class="asked">asked: {{ item.submisson_time }}</span>
 
         </div>
     </div>
