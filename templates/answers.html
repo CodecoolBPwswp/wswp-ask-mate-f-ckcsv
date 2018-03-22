@@ -35,6 +35,6 @@
 
     {% endfor %}
 
-<a class="text-white" href="{{ url_for('list_questions') }}"><button class="btn btn-secondary mt-3 ">Go back</button></a>
+    <a href="{{url_for('answer_form', question_id=question.id)}}"><button class="btn btn-primary text-white mt-3">Add Answer</button></a>
 
 {% endblock %}
