@@ -65,19 +65,21 @@ def answer_form(question_id):
         current_answers = read_answers()
         new_row = dict()
         filename = ''
+        file = None
         
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.getcwd() + os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        
+        if request.files:
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.getcwd() + os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
         new_row.update({
             'id'            : len(current_answers),
             'submisson_time': format(time.time(), '.0f'),
             'vote_number'   : 0,
             'question_id'   : question_id,
             'message'       : request.form.get('message'),
-            'image'         : UPLOAD_FOLDER+filename if file else ''
+            'image'         : UPLOAD_FOLDER + filename if file else ''
         })
         write_answer(new_row)
         return redirect('/question/{}'.format(question_id))
