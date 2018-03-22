@@ -9,10 +9,10 @@ Questions
     <table>
         <tr>
             <th>Question ID</th>
-            <th><a href="{{ url_for('questions.html') }}?order=question"></a>Question</th>
-            <th><a href="{{ url_for('questions.html') }}?order=view_number"></a>View Number</th>
-            <th><a href="{{ url_for('questions.html') }}?order=vote_number"></a>Vote Number</th>
-            <th><a href="{{ url_for('questions.html') }}?order=submisson_time"></a>Submission time</th>
+            <th><a href="{{ url_for('list_questions') }}?order=question">Question</a></th>
+            <th><a href="{{ url_for('list_questions') }}?order=view_number">View Number</a></th>
+            <th><a href="{{ url_for('list_questions') }}?order=vote_number">Vote Number</a></th>
+            <th><a href="{{ url_for('list_questions') }}?order=submisson_time">Submission time</a></th>
 
         </tr>
         {% for question in questions %}
