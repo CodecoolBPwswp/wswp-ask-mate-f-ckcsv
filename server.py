@@ -149,18 +149,20 @@ def delete_question(question_id):
     return redirect(url_for("list_questions"))
 
 
-@app.route('/delete_answer', methods=['POST'])
+@app.route('/delete_answer/<answer_id>', methods=['POST'])
 def delete_answer(answer_id):
     current_answers = read_answers()
+    question_id=0
     for i, row in enumerate(current_answers):
         if row['id'] == answer_id:
+            question_id=row["question_id"]
             del current_answers[i]
 
             delete_answers()
 
             for row in current_answers:
                 write_answer(row)
-    return redirect(url_for("list_questions"))
+    return redirect(url_for("display_question", id=question_id))
 
 
 if __name__ == '__main__':
