@@ -39,7 +39,7 @@ def read_question_by_id(cursor, id):
 @database_common.connection_handler
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
-            SELECT * FROM answer WHERE question_id = %(id)s
+            SELECT * FROM answer WHERE question_id = %(id)s ORDER BY id ASC
         """, {'id': id})
     
     answer = cursor.fetchall()
