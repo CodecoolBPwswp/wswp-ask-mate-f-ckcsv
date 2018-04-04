@@ -147,7 +147,7 @@ def question_comments(cursor, question_id):
     cursor.execute("""
                     SELECT message FROM comment
                     WHERE question_id = %(question_id)s   
-                """, {'id': question_id})
+                """, {'question_id': question_id})
 
     comments = cursor.fetchall()
 

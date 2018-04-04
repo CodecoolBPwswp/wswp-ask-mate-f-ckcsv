@@ -39,11 +39,12 @@ def list_questions():
 def display_question(id):
     answer = sql_data_manager.read_answers_by_question_id(id)
     question = sql_data_manager.read_question_by_id(id)[0]
+    question_comments = sql_data_manager.question_comments(id)
     
     if not question:
         abort(404)
     
-    return render_template("answers.html", answer=answer, question=question)
+    return render_template("answers.html", answer=answer, question=question, question_comments = question_comments)
 
 
 @app.route('/add-question')
