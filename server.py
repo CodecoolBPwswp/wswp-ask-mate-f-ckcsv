@@ -123,6 +123,9 @@ def delete_answer(answer_id):
     question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
 
+@app.route('/add_comment/<answer_id>', methods=['POST'])
+def add_comment():
+    pass
 
 if __name__ == '__main__':
     app.secret_key = "topsecret"
