@@ -16,7 +16,7 @@ def read_questions_correct_format(ordered_by=None, desc=True):
     for question in question_list:
         question["submisson_time"] = datetime.datetime.fromtimestamp(int(question["submisson_time"])).strftime(
                 '%Y-%m-%d %H:%M:%S')
-
+    
     if not ordered_by:
         ordered(question_list, "submisson_time")
     else:
@@ -79,17 +79,17 @@ def delete_answers():
 
 def update_vote(question_id, answer_id, type):
     answers = read_answers()
-
+    
     delete_csv_data(ANSWER_FILE_PATH, ANSWER_HEADER)
-
+    
     for answer in answers:
         if answer["id"] == answer_id and int(answer["question_id"]) == question_id:
-
+            
             if type == "vote-up":
                 answer["vote_number"] = str(int(answer["vote_number"]) + 1)
             else:
                 answer["vote_number"] = str(int(answer["vote_number"]) - 1)
-
+        
         write_answer(answer)
 
 

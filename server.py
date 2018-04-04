@@ -42,7 +42,7 @@ def display_question(id):
 @app.route('/add-question', methods=['POST'])
 def question_form():
     if request.method == 'POST':
-        sql_data_manager.write_question(request.form.get('title'),request.form.get('message'))
+        sql_data_manager.write_question(request.form.get('title'), request.form.get('message'))
         return redirect(url_for('list_questions'))
     
     return render_template('add-question.html', h1='Create question')
@@ -52,26 +52,18 @@ def question_form():
 @app.route('/question/<int:question_id>/new-answer', methods=['POST'])
 def answer_form(question_id):
     if request.method == 'POST':
-        current_answers = read_answers()
-        new_row = dict()
         filename = ''
         file = None
-        
         if request.files:
             file = request.files['file']
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.getcwd() + os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-        new_row.update({
-            'id'            : len(current_answers),
-            'submisson_time': format(time.time(), '.0f'),
-            'vote_number'   : 0,
-            'question_id'   : question_id,
-            'message'       : request.form.get('message'),
-            'image'         : UPLOAD_FOLDER + filename if file else ''
-        })
-        write_answer(new_row)
+        
+        message = request.form.get('message')
+        image = UPLOAD_FOLDER + filename if file else ''
+        
+        sql_data_manager.write_answer(question_id, message, image)
         return redirect('/question/{}'.format(question_id))
     
     return render_template('new-answer.html', h1='Create answer')
@@ -80,30 +72,14 @@ def answer_form(question_id):
 @app.route('/question/<question_id>/edit')
 @app.route('/question/<question_id>/edit', methods=['POST'])
 def edit_question(question_id):
-    current_questions = sql_data_manager.read_questions()
-    question = []
-    index = -1
-    
-    for i, row in enumerate(current_questions):
-        if row['id'] == question_id:
-            question = row
-            index = i
-            break
+    question = sql_data_manager.read_question_by_id(question_id)[0]
     
     if request.method == 'POST':
         try:
             question['title'] = request.form.get('title', '')
             question['message'] = request.form.get('message', '')
-            question['submisson_time'] = format(time.time(), '.0f')
             
-            current_questions.pop(index)
-            
-            delete_questions()
-            
-            for row in current_questions:
-                write_question(row)
-            
-            write_question(question)
+            sql_data_manager.update_question(question_id, question['title'], question['message'])
             
             return redirect('/question/{}'.format(question_id))
         except Exception as e:
@@ -123,37 +99,19 @@ def page_not_found(e):
 @app.route('/question/<int:question_id>/<type>', methods=['POST'])
 def vote(question_id, type):
     answer_id = request.form["answer_id"]
-    update_vote(question_id, answer_id, type)
+    sql_data_manager.update_vote(answer_id, type)
     return redirect(url_for("display_question", id=question_id))
 
 
 @app.route('/question/<question_id>/delete')
 def delete_question(question_id):
-    current_questions = read_questions()
-    for i, row in enumerate(current_questions):
-        if row['id'] == question_id:
-            del current_questions[i]
-
-            delete_questions()
-
-            for row in current_questions:
-                write_question(row)
+    sql_data_manager.delete_question(question_id)
     return redirect(url_for("list_questions"))
 
 
 @app.route('/delete_answer/<answer_id>', methods=['POST'])
 def delete_answer(answer_id):
-    current_answers = read_answers()
-    question_id=0
-    for i, row in enumerate(current_answers):
-        if row['id'] == answer_id:
-            question_id=row["question_id"]
-            del current_answers[i]
-
-            delete_answers()
-
-            for row in current_answers:
-                write_answer(row)
+    question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
 
 

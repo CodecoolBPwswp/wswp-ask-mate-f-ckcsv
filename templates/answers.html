@@ -10,7 +10,7 @@
             <span class="font-weight-bold">{{ question.title }}</span>
         </div>
         <div class="card-body">
-           <p class="card-text">{{ question.message }}</p>
+           <p class="card-text">{{ question.message|safe }}</p>
         </div>
         <div class="card-footer ">
             asked {{ question.submisson_time }}
