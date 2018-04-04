@@ -118,3 +118,25 @@ def delete_answer(cursor, id):
             """, {'id': id}
     )
     return question_id
+
+
+@database_common.connection_handler
+def search_questions(cursor, search_term, order="submisson_time", desc=False):
+    if order is None:
+        order = 'submisson_time'
+    
+    if not desc:
+        cursor.execute("""
+            SELECT * FROM question
+            WHERE title LIKE '%{search_term}%' OR message LIKE '%{search_term}%'
+            ORDER BY {order} ASC
+        """.format(order=order, search_term=search_term))
+    else:
+        cursor.execute("""
+                    SELECT * FROM question
+                    ORDER BY {} DESC
+                """.format(order))
+    
+    questions = cursor.fetchall()
+    
+    return questions

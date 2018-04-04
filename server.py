@@ -13,17 +13,25 @@ desc = False
 
 @app.route('/')
 @app.route('/list')
+@app.route('/search', methods=['GET'])
 def list_questions():
     global column
     global desc
     order = request.args.get('order')
+    column = order
+    search_term = request.args.get('search_term')
     if column == order:
-        questions = sql_data_manager.read_questions(request.args.get('order'), desc)
+        if search_term:
+            questions = sql_data_manager.search_questions(search_term, request.args.get('order'), desc)
+        else:
+            questions = sql_data_manager.read_questions(request.args.get('order'), desc)
         desc = not desc
     else:
-        questions = sql_data_manager.read_questions(order)
+        if search_term:
+            questions = sql_data_manager.search_questions(search_term, order)
+        else:
+            questions = sql_data_manager.read_questions(order)
     
-    column = order
     return render_template('questions.html', questions=questions)
 
 
@@ -117,5 +125,4 @@ def delete_answer(answer_id):
 
 if __name__ == '__main__':
     app.secret_key = "topsecret"
-    answers = read_answers()
     app.run(debug=True, host='0.0.0.0', port=5000)
