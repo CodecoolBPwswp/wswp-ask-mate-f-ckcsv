@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, abort
 import csv, os, time
 from data_manager import *
 from werkzeug.utils import secure_filename
+import sql_data_manager
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -17,10 +18,10 @@ def list_questions():
     global desc
     order = request.args.get('order')
     if column == order:
-        questions = read_questions_correct_format(request.args.get('order'), desc)
+        questions = sql_data_manager.read_questions(request.args.get('order'), desc)
         desc = not desc
     else:
-        questions = read_questions_correct_format(order)
+        questions = sql_data_manager.read_questions(order)
     
     column = order
     return render_template('questions.html', questions=questions)
@@ -28,8 +29,8 @@ def list_questions():
 
 @app.route('/question/<int:id>')
 def display_question(id):
-    answer = read_answers_by_question_id(id)
-    question = read_question_by_id(id)
+    answer = sql_data_manager.read_answers_by_question_id(id)
+    question = sql_data_manager.read_question_by_id(id)[0]
     
     if not question:
         abort(404)
@@ -41,18 +42,7 @@ def display_question(id):
 @app.route('/add-question', methods=['POST'])
 def question_form():
     if request.method == 'POST':
-        current_questions = read_questions()
-        new_row = dict()
-        new_row.update({
-            'title'         : request.form.get('title'),
-            'message'       : request.form.get('message'),
-            'id'            : len(current_questions),
-            'submisson_time': format(time.time(), '.0f'),
-            'view_number'   : 0,
-            'vote_number'   : 0,
-            'image'         : ''
-        })
-        write_question(new_row)
+        sql_data_manager.write_question(request.form.get('title'),request.form.get('message'))
         return redirect(url_for('list_questions'))
     
     return render_template('add-question.html', h1='Create question')
@@ -90,7 +80,7 @@ def answer_form(question_id):
 @app.route('/question/<question_id>/edit')
 @app.route('/question/<question_id>/edit', methods=['POST'])
 def edit_question(question_id):
-    current_questions = read_questions()
+    current_questions = sql_data_manager.read_questions()
     question = []
     index = -1
     
