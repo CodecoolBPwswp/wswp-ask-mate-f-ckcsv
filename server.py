@@ -1,11 +1,11 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, abort
-import csv, os, time
-from data_manager import *
 from werkzeug.utils import secure_filename
+
 import sql_data_manager
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 desc = False
 order = "submisson_time"
@@ -28,20 +28,21 @@ def list_questions():
     return render_template('questions.html', questions=questions)
 
 
-@app.route('/question/<int:question_id>')
-@app.route('/add_comment', methods=['POST'])
-def display_question(question_id):
-    answer = sql_data_manager.read_answers_by_question_id(question_id)
-    question = sql_data_manager.read_question_by_id(question_id)[0]
-    answer_comments = sql_data_manager.answer_comments(question_id)
+@app.route('/question/<int:id>',  methods=['GET', 'POST'])
+def display_question(id):
+    answer = sql_data_manager.read_answers_by_question_id(id)
+    question = sql_data_manager.read_question_by_id(id)[0]
+    answer_comments = sql_data_manager.answer_comments(id)
     
     if not question:
         abort(404)
     
     if request.method == "POST":
-        sql_data_manager.add_comment()
-    
-    return render_template("answers.html", answer=answer, question=question, answer_comments=answer_comments)
+        sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"])
+        return redirect(url_for("display_question", id=id) + "#ans_" + request.form["answer_id"])
+
+
+    return render_template("answers.html", answer=answer, question=question, answer_comments = answer_comments)
 
 
 @app.route('/add-question')
@@ -138,13 +139,35 @@ def search():
     
     if not search_term:
         return redirect(url_for('list_questions'))
-    
+        
     questions = sql_data_manager.search_questions(search_term)
     
     for question in questions:
         question['title'] = highlight(question['title'], search_term)
     
     return render_template('search.html', questions=questions)
+
+
+@app.route('/answer/<answer_id>/edit')
+@app.route('/answer/<answer_id>/edit', methods=['POST'])
+def edit_answer(answer_id):
+    answer = sql_data_manager.read_answer_by_id(answer_id)[0]
+
+    if request.method == 'POST':
+        try:
+            answer['message'] = request.form.get('message', '')
+
+            sql_data_manager.update_answer(answer_id, answer['message'])
+
+            question_id = sql_data_manager.read_question_id_by_answer_id(answer_id)[0]['question_id']
+
+            return redirect('/question/{}'.format(question_id))
+        except Exception as e:
+            print(e)
+
+    return render_template('new-answer.html', edit_data={
+        'message': answer['message']
+    })
 
 
 if __name__ == '__main__':
