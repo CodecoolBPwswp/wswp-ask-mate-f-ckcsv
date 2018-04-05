@@ -1,14 +1,15 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, abort
-import csv, os, time
-from data_manager import *
 from werkzeug.utils import secure_filename
+
 import sql_data_manager
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 desc = False
 order = "submisson_time"
+
 
 @app.route('/')
 @app.route('/list', methods=['GET'])
@@ -35,7 +36,7 @@ def display_question(id):
     
     if not question:
         abort(404)
-
+    
     if request.method == "POST":
         sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"])
         return redirect(url_for("display_question", id=id) + "#" + request.form["answer_id"])
@@ -120,6 +121,17 @@ def delete_answer(answer_id):
     question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
 
+
+def highlight(text: str, term: str):
+    return text.replace(
+            term.title(), "<mark>" + term.title() + "</mark>"
+    ).replace(
+            term.lower(), "<mark>" + term.title() + "</mark>"
+    ).replace(
+            term.upper(), "<mark>" + term.title() + "</mark>"
+    )
+
+
 @app.route('/search', methods=['GET'])
 def search():
     search_term = request.args.get('search_term', None)
@@ -130,7 +142,33 @@ def search():
         
     questions = sql_data_manager.search_questions(search_term)
     
+    for question in questions:
+        question['title'] = highlight(question['title'], search_term)
+    
     return render_template('search.html', questions=questions)
+
+
+@app.route('/answer/<answer_id>/edit')
+@app.route('/answer/<answer_id>/edit', methods=['POST'])
+def edit_answer(answer_id):
+    answer = sql_data_manager.read_answer_by_id(answer_id)[0]
+
+    if request.method == 'POST':
+        try:
+            answer['message'] = request.form.get('message', '')
+
+            sql_data_manager.update_answer(answer_id, answer['message'])
+
+            question_id = sql_data_manager.read_question_id_by_answer_id(answer_id)[0]['question_id']
+
+            return redirect('/question/{}'.format(question_id))
+        except Exception as e:
+            print(e)
+
+    return render_template('new-answer.html', edit_data={
+        'message': answer['message']
+    })
+
 
 if __name__ == '__main__':
     app.secret_key = "topsecret"

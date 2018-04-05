@@ -28,6 +28,17 @@ def read_question_by_id(cursor, id):
 
 
 @database_common.connection_handler
+def read_answer_by_id(cursor, id):
+    cursor.execute("""
+        SELECT * FROM answer WHERE id = %(id)s
+    """, {'id': id})
+
+    answer = cursor.fetchall()
+
+    return answer
+
+
+@database_common.connection_handler
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
             SELECT * FROM answer WHERE question_id = %(id)s ORDER BY id ASC
@@ -67,6 +78,16 @@ def update_question(cursor, id, title, message):
             UPDATE question SET submisson_time = localtimestamp(0), title = %(title)s, message = %(message)s
             WHERE id=%(id)s
             """, {'id': id, 'title': title, 'message': message}
+    )
+
+@database_common.connection_handler
+def update_answer(cursor, id, message):
+    message = message.replace('\r', '').replace('\n', '<br>')
+    cursor.execute(
+        """
+        UPDATE answer SET submisson_time = localtimestamp(0), message = %(message)s
+        WHERE id=%(id)s
+        """, {'id': id, 'message': message}
     )
 
 
@@ -112,6 +133,16 @@ def delete_answer(cursor, id):
 
 
 @database_common.connection_handler
+def read_question_id_by_answer_id(cursor, answer_id):
+    cursor.execute("""
+        SELECT question_id FROM answer WHERE id = %(answer_id)s
+    """, {'answer_id': answer_id})
+
+    question_id = cursor.fetchall()
+
+    return question_id
+
+@database_common.connection_handler
 def search_questions(cursor, search_term):
     cursor.execute(
             """
@@ -120,9 +151,9 @@ def search_questions(cursor, search_term):
             ORDER BY submisson_time DESC
             """, {'search_term': ('%' + search_term + '%')}
     )
-    
+
     questions = cursor.fetchall()
-    
+
     return questions
 
 
