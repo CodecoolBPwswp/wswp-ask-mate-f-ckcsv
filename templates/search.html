@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block title %}Search results{% endblock %}
+
+
+{% block content %}
+    <table class="table table-hover table-responsive-lg">
+        <tr class="bg-dark">
+            <th>Question ID</th>
+            <th>Question</th>
+            <th>View Number</th>
+            <th>Vote Number</th>
+            <th>Submission time</th>
+
+        </tr>
+        {% for question in questions %}
+            <tr>
+                <td>{{ question.id }}</td>
+                <td><a href="/question/{{ question.id }}">{{ question.title }}</a></td>
+                <td>{{ question.view_number }}</td>
+                <td>{{ question.vote_number }}</td>
+                <td>{{ question.submisson_time }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

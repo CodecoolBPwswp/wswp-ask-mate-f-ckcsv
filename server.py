@@ -120,6 +120,18 @@ def delete_answer(answer_id):
     question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
 
+@app.route('/search', methods=['GET'])
+def search():
+    search_term = request.args.get('search_term', None)
+    search_term = search_term.lower()
+    
+    if not search_term:
+        return redirect(url_for('list_questions'))
+        
+    questions = sql_data_manager.search_questions(search_term)
+    
+    return render_template('search.html', questions=questions)
+
 if __name__ == '__main__':
     app.secret_key = "topsecret"
     app.run(debug=True, host='0.0.0.0', port=5000)

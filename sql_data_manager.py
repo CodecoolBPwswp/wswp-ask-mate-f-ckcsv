@@ -112,21 +112,14 @@ def delete_answer(cursor, id):
 
 
 @database_common.connection_handler
-def search_questions(cursor, search_term, order="submisson_time", desc=False):
-    if order is None:
-        order = 'submisson_time'
-    
-    if not desc:
-        cursor.execute("""
+def search_questions(cursor, search_term):
+    cursor.execute(
+            """
             SELECT * FROM question
-            WHERE title LIKE '%{search_term}%' OR message LIKE '%{search_term}%'
-            ORDER BY {order} ASC
-        """.format(order=order, search_term=search_term))
-    else:
-        cursor.execute("""
-                    SELECT * FROM question
-                    ORDER BY {} DESC
-                """.format(order))
+            WHERE LOWER(title) LIKE %(search_term)s OR LOWER(message) LIKE %(search_term)s
+            ORDER BY submisson_time DESC
+            """, {'search_term': ('%' + search_term + '%')}
+    )
     
     questions = cursor.fetchall()
     
@@ -145,8 +138,8 @@ def answer_comments(cursor, question_id):
     return comments
 
 @database_common.connection_handler
-def add_comment(cursor, question_id, answer_id, message):
+def add_comment(cursor, question_id, answer_id, message, submission_time):
     cursor.execute("""
-                    INSERT INTO comment (question_id, answer_id, message, submission_time) 
-                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, localtimestamp(0))
-                    """, {"question_id": question_id, "answer_id": answer_id, "message": message})
+                    INSERT INTO comment (question_id, answer_id, message, submission_time)
+                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s)
+                    """, {"question_id": question_id, "answer_id": answer_id, "message": message, "submission_time": submission_time})
