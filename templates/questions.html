@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-Questions
+    Questions
 {% endblock %}
 
 
@@ -9,20 +9,21 @@ Questions
     <table class="table table-hover table-responsive-lg">
         <tr class="bg-dark">
             <th>Question ID</th>
-            <th><a href="{{ url_for('list_questions') }}?order=title">Question</a></th>
-            <th><a href="{{ url_for('list_questions') }}?order=view_number">View Number</a></th>
-            <th><a href="{{ url_for('list_questions') }}?order=vote_number">Vote Number</a></th>
-            <th><a href="{{ url_for('list_questions') }}?order=submisson_time">Submission time</a></th>
+            <th><a href="{{ url_for('list_questions', order='title') }}">Question</a></th>
+            <th><a href="{{ url_for('list_questions', order='view_number') }}">View Number</a></th>
+            <th><a href="{{ url_for('list_questions', order='vote_number') }}">Vote Number</a></th>
+            <th><a href="{{ url_for('list_questions', order='submisson_time') }}">Submission
+                time</a></th>
 
         </tr>
         {% for question in questions %}
-        <tr>
-            <td>{{ question.id }}</td>
-            <td><a href="/question/{{  question.id }}">{{ question.title }}</a></td>
-            <td>{{ question.view_number }}</td>
-            <td>{{ question.vote_number }}</td>
-            <td>{{ question.submisson_time }}</td>
-        </tr>
-        {%  endfor %}
+            <tr>
+                <td>{{ question.id }}</td>
+                <td><a href="/question/{{ question.id }}">{{ question.title }}</a></td>
+                <td>{{ question.view_number }}</td>
+                <td>{{ question.vote_number }}</td>
+                <td>{{ question.submisson_time }}</td>
+            </tr>
+        {% endfor %}
     </table>
 {% endblock %}

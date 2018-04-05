@@ -5,20 +5,11 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 
 @database_common.connection_handler
-def read_questions(cursor, order="submisson_time", desc=False):
-    if order is None:
-        order = 'submisson_time'
-    
-    if not desc:
-        cursor.execute("""
-            SELECT * FROM question
-            ORDER BY {} ASC
-        """.format(order))
-    else:
-        cursor.execute("""
-                    SELECT * FROM question
-                    ORDER BY {} DESC
-                """.format(order))
+def read_questions(cursor, order, ascdesc):
+    cursor.execute("""
+        SELECT * FROM question
+        ORDER BY {} {}
+    """.format(order, ascdesc))
     
     questions = cursor.fetchall()
     

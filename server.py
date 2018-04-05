@@ -7,30 +7,22 @@ import sql_data_manager
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-column = "submisson_time"
 desc = False
-
+order = "submisson_time"
 
 @app.route('/')
-@app.route('/list')
-@app.route('/search', methods=['GET'])
+@app.route('/list', methods=['GET'])
 def list_questions():
-    global column
     global desc
-    order = request.args.get('order')
-    column = order
-    search_term = request.args.get('search_term')
-    if column == order:
-        if search_term:
-            questions = sql_data_manager.search_questions(search_term, request.args.get('order'), desc)
-        else:
-            questions = sql_data_manager.read_questions(request.args.get('order'), desc)
+    global order
+    
+    if request.args.get('order') == order:
         desc = not desc
     else:
-        if search_term:
-            questions = sql_data_manager.search_questions(search_term, order)
-        else:
-            questions = sql_data_manager.read_questions(order)
+        order = request.args.get("order") if request.args.get("order") else "submisson_time"
+    ascdesc = "DESC" if desc else "ASC"
+    
+    questions = sql_data_manager.read_questions(order, ascdesc)
     
     return render_template('questions.html', questions=questions)
 
@@ -127,7 +119,6 @@ def delete_question(question_id):
 def delete_answer(answer_id):
     question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
-
 
 if __name__ == '__main__':
     app.secret_key = "topsecret"
