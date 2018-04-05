@@ -18,8 +18,6 @@
         </div>
     </div>
 
-
-
     {% for item in answer %}
     <div class="card mt-3 text-white">
         <div class="card-body">
@@ -28,7 +26,7 @@
         </div>
         <div class="card-footer ">
             <form method="post" action="{{ url_for('display_question', id=question.id) }}/vote-up" id="answer_form">
-                <span class="btn btn-primary">{{ item["vote_number"] }}</span>
+                <span class="btn btn-primary" id="v_{{ item.id }}">{{ item["vote_number"] }}</span>
                 <input type="hidden" name="answer_id" value="{{ item.id }}">
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-up">VOTE UP</button>
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-down">VOTE DOWN</button>
@@ -36,11 +34,8 @@
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('delete_answer', answer_id=item.id) }}">DELETE</button>
             </form>
             <span class="asked">asked: {{ item.submisson_time }}</span>
-
         </div>
-
           <hr>
-
          <div class="card-footer">
 
            <div class="comments" id="{{item.id}}">
@@ -53,7 +48,6 @@
                     {% endif %}
                {% endfor %}
            </div>
-
             <div class="new_comment">
                 <form action="" method="post" class="mt-3">
                     <div class="form-group">
