@@ -1,11 +1,11 @@
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, abort
-import csv, os, time
-from data_manager import *
 from werkzeug.utils import secure_filename
+
 import sql_data_manager
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 column = "submisson_time"
 desc = False
@@ -115,7 +115,28 @@ def delete_answer(answer_id):
     return redirect(url_for("display_question", id=question_id))
 
 
+@app.route('/answer/<answer_id>/edit')
+@app.route('/answer/<answer_id>/edit', methods=['POST'])
+def edit_answer(answer_id):
+    answer = sql_data_manager.read_answer_by_id(answer_id)[0]
+
+    if request.method == 'POST':
+        try:
+            answer['message'] = request.form.get('message', '')
+
+            sql_data_manager.update_answer(answer_id, answer['message'])
+
+            question_id = sql_data_manager.read_question_id_by_answer_id(answer_id)[0]['question_id']
+
+            return redirect('/question/{}'.format(question_id))
+        except Exception as e:
+            print(e)
+
+    return render_template('new-answer.html', edit_data={
+        'message': answer['message']
+    })
+
+
 if __name__ == '__main__':
     app.secret_key = "topsecret"
-    answers = read_answers()
     app.run(debug=True, host='0.0.0.0', port=5000)

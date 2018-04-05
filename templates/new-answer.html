@@ -18,7 +18,7 @@
                           rows="8"
                           placeholder="Enter your answer here,&#10;at least 10 characters long"
                           required
-                          pattern=".{10,}"></textarea>
+                          pattern=".{10,}">{{ edit_data.get('message', '') if edit_data }}</textarea>
                 <input class="mt-4" type=file name=file>
             </div>
 

@@ -37,6 +37,17 @@ def read_question_by_id(cursor, id):
 
 
 @database_common.connection_handler
+def read_answer_by_id(cursor, id):
+    cursor.execute("""
+        SELECT * FROM answer WHERE id = %(id)s
+    """, {'id': id})
+
+    answer = cursor.fetchall()
+
+    return answer
+
+
+@database_common.connection_handler
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
             SELECT * FROM answer WHERE question_id = %(id)s ORDER BY id ASC
@@ -78,6 +89,16 @@ def update_question(cursor, id, title, message):
             """, {'id': id, 'title': title, 'message': message}
     )
 
+@database_common.connection_handler
+def update_answer(cursor, id, message):
+    message = message.replace('\r', '').replace('\n', '<br>')
+    cursor.execute(
+        """
+        UPDATE answer SET submisson_time = localtimestamp(0), message = %(message)s
+        WHERE id=%(id)s
+        """, {'id': id, 'message': message}
+    )
+
 
 @database_common.connection_handler
 def update_vote(cursor, answer_id, type):
@@ -117,4 +138,15 @@ def delete_answer(cursor, id):
             DELETE FROM answer WHERE id=%(id)s;
             """, {'id': id}
     )
+    return question_id
+
+
+@database_common.connection_handler
+def read_question_id_by_answer_id(cursor, answer_id):
+    cursor.execute("""
+        SELECT question_id FROM answer WHERE id = %(answer_id)s
+    """, {'answer_id': answer_id})
+
+    question_id = cursor.fetchall()
+
     return question_id

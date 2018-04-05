@@ -29,6 +29,7 @@
                 <input type="hidden" name="answer_id" value="{{ item.id }}">
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-up">VOTE UP</button>
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-down">VOTE DOWN</button>
+                <button class="btn btn-secondary" formaction="{{ url_for('edit_answer', answer_id=item.id) }}">EDIT</button>
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('delete_answer', answer_id=item.id) }}">DELETE</button>
             </form>
             <span class="asked">asked: {{ item.submisson_time }}</span>
