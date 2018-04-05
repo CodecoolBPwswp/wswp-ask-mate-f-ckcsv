@@ -127,12 +127,19 @@ def search_questions(cursor, search_term):
 
 
 @database_common.connection_handler
-def question_comments(cursor, question_id):
+def answer_comments(cursor, question_id):
     cursor.execute("""
-                    SELECT message FROM comment
+                    SELECT answer_id, message FROM comment
                     WHERE question_id = %(question_id)s   
                 """, {'question_id': question_id})
-    
+
     comments = cursor.fetchall()
-    
+
     return comments
+
+@database_common.connection_handler
+def add_comment(cursor, question_id, answer_id, message, submission_time):
+    cursor.execute("""
+                    INSERT INTO comment (question_id, answer_id, message, submission_time)
+                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, %(submission_time)s)
+                    """, {"question_id": question_id, "answer_id": answer_id, "message": message, "submission_time": submission_time})
