@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 
 import sql_data_manager
 
+UPLOAD_FOLDER = sql_data_manager.UPLOAD_FOLDER
 app = Flask(__name__)
 
 desc = False
@@ -28,7 +29,7 @@ def list_questions():
     return render_template('questions.html', questions=questions)
 
 
-@app.route('/question/<int:id>',  methods=['GET', 'POST'])
+@app.route('/question/<int:id>', methods=['GET', 'POST'])
 def display_question(id):
     answer = sql_data_manager.read_answers_by_question_id(id)
     question = sql_data_manager.read_question_by_id(id)[0]
@@ -40,9 +41,8 @@ def display_question(id):
     if request.method == "POST":
         sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"])
         return redirect(url_for("display_question", id=id) + "#ans_" + request.form["answer_id"])
-
-
-    return render_template("answers.html", answer=answer, question=question, answer_comments = answer_comments)
+    
+    return render_template("answers.html", answer=answer, question=question, answer_comments=answer_comments)
 
 
 @app.route('/add-question')
@@ -63,7 +63,7 @@ def answer_form(question_id):
         file = None
         if request.files:
             file = request.files['file']
-            if file and allowed_file(file.filename):
+            if file and sql_data_manager.allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.getcwd() + os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
@@ -139,11 +139,12 @@ def search():
     
     if not search_term:
         return redirect(url_for('list_questions'))
-        
+    
     questions = sql_data_manager.search_questions(search_term)
     
     for question in questions:
         question['title'] = highlight(question['title'], search_term)
+        question['message'] = highlight(question['message'], search_term)
     
     return render_template('search.html', questions=questions)
 
@@ -152,19 +153,19 @@ def search():
 @app.route('/answer/<answer_id>/edit', methods=['POST'])
 def edit_answer(answer_id):
     answer = sql_data_manager.read_answer_by_id(answer_id)[0]
-
+    
     if request.method == 'POST':
         try:
             answer['message'] = request.form.get('message', '')
-
+            
             sql_data_manager.update_answer(answer_id, answer['message'])
-
+            
             question_id = sql_data_manager.read_question_id_by_answer_id(answer_id)[0]['question_id']
-
+            
             return redirect('/question/{}'.format(question_id))
         except Exception as e:
             print(e)
-
+    
     return render_template('new-answer.html', edit_data={
         'message': answer['message']
     })

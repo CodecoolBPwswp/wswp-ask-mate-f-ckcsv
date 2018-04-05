@@ -174,3 +174,7 @@ def add_comment(cursor, question_id, answer_id, message):
                     INSERT INTO comment (question_id, answer_id, message,  submission_time)
                     VALUES (%(question_id)s, %(answer_id)s, %(message)s, localtimestamp(0))
                     """, {"question_id": question_id, "answer_id": answer_id, "message": message})
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

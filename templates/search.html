@@ -21,6 +21,10 @@
                 <td>{{ question.vote_number }}</td>
                 <td>{{ question.submisson_time }}</td>
             </tr>
+            <tr style="border-bottom: 3px;">
+                <td>Message</td>
+                <td colspan="4">{{ question.message|safe }}</td>
+            </tr>
         {% endfor %}
     </table>
 {% endblock %}
