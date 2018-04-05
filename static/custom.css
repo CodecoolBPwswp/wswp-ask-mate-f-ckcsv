@@ -13,3 +13,8 @@ th {
 .answer_img {
     width: 50%;
 }
+
+mark {
+    background-color: yellow;
+    color: black;
+}

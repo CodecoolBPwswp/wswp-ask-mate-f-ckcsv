@@ -16,7 +16,7 @@
         {% for question in questions %}
             <tr>
                 <td>{{ question.id }}</td>
-                <td><a href="/question/{{ question.id }}">{{ question.title }}</a></td>
+                <td><a href="/question/{{ question.id }}">{{ question.title|safe }}</a></td>
                 <td>{{ question.view_number }}</td>
                 <td>{{ question.vote_number }}</td>
                 <td>{{ question.submisson_time }}</td>

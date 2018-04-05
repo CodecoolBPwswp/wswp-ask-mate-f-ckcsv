@@ -10,6 +10,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 desc = False
 order = "submisson_time"
 
+
 @app.route('/')
 @app.route('/list', methods=['GET'])
 def list_questions():
@@ -36,12 +37,11 @@ def display_question(question_id):
     
     if not question:
         abort(404)
-
+    
     if request.method == "POST":
         sql_data_manager.add_comment()
-
-
-    return render_template("answers.html", answer=answer, question=question, answer_comments = answer_comments)
+    
+    return render_template("answers.html", answer=answer, question=question, answer_comments=answer_comments)
 
 
 @app.route('/add-question')
@@ -120,6 +120,17 @@ def delete_answer(answer_id):
     question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
 
+
+def highlight(text: str, term: str):
+    return text.replace(
+            term.title(), "<mark>" + term.title() + "</mark>"
+    ).replace(
+            term.lower(), "<mark>" + term.title() + "</mark>"
+    ).replace(
+            term.upper(), "<mark>" + term.title() + "</mark>"
+    )
+
+
 @app.route('/search', methods=['GET'])
 def search():
     search_term = request.args.get('search_term', None)
@@ -127,10 +138,14 @@ def search():
     
     if not search_term:
         return redirect(url_for('list_questions'))
-        
+    
     questions = sql_data_manager.search_questions(search_term)
     
+    for question in questions:
+        question['title'] = highlight(question['title'], search_term)
+    
     return render_template('search.html', questions=questions)
+
 
 if __name__ == '__main__':
     app.secret_key = "topsecret"
