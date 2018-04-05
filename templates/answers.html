@@ -12,10 +12,30 @@
         <div class="card-body">
            <p class="card-text">{{ question.message|safe }}</p>
         </div>
+        <div class="card-body">
+            <div class="show_comment mb-3">Comments: <button class="btn btn btn-secondary text-white btn-sm">Add comment</button></div>
+            <div class="new_comment" style="display: none">
+                <form action="">
+                    <div class="form-group">
+                        <textarea name="new_comment" id="" cols="2" rows="3" class="form-control col-lg-6"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-secondary">Add</button>
+                    </div>
+                </form>
+            </div>
+                {% for comment in question_comments %}
+                    <div class="comments">
+                        {{comment.message}}
+                    </div>
+                {% endfor %}
+        </div>
         <div class="card-footer ">
             asked {{ question.submisson_time }}
         </div>
     </div>
+
+
 
     {% for item in answer %}
     <div class="card mt-3 text-white">

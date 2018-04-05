@@ -131,3 +131,15 @@ def search_questions(cursor, search_term, order="submisson_time", desc=False):
     questions = cursor.fetchall()
     
     return questions
+
+
+@database_common.connection_handler
+def question_comments(cursor, question_id):
+    cursor.execute("""
+                    SELECT message FROM comment
+                    WHERE question_id = %(question_id)s   
+                """, {'question_id': question_id})
+
+    comments = cursor.fetchall()
+
+    return comments
