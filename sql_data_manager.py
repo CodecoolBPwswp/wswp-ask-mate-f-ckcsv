@@ -5,20 +5,11 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 
 @database_common.connection_handler
-def read_questions(cursor, order="submisson_time", desc=False):
-    if order is None:
-        order = 'submisson_time'
-    
-    if not desc:
-        cursor.execute("""
-            SELECT * FROM question
-            ORDER BY {} ASC
-        """.format(order))
-    else:
-        cursor.execute("""
-                    SELECT * FROM question
-                    ORDER BY {} DESC
-                """.format(order))
+def read_questions(cursor, order, ascdesc):
+    cursor.execute("""
+        SELECT * FROM question
+        ORDER BY {} {}
+    """.format(order, ascdesc))
     
     questions = cursor.fetchall()
     
@@ -150,3 +141,36 @@ def read_question_id_by_answer_id(cursor, answer_id):
     question_id = cursor.fetchall()
 
     return question_id
+
+@database_common.connection_handler
+def search_questions(cursor, search_term):
+    cursor.execute(
+            """
+            SELECT * FROM question
+            WHERE LOWER(title) LIKE %(search_term)s OR LOWER(message) LIKE %(search_term)s
+            ORDER BY submisson_time DESC
+            """, {'search_term': ('%' + search_term + '%')}
+    )
+
+    questions = cursor.fetchall()
+
+    return questions
+
+
+@database_common.connection_handler
+def answer_comments(cursor, question_id):
+    cursor.execute("""
+                    SELECT answer_id, message FROM comment
+                    WHERE question_id = %(question_id)s   
+                """, {'question_id': question_id})
+
+    comments = cursor.fetchall()
+
+    return comments
+
+@database_common.connection_handler
+def add_comment(cursor, question_id, answer_id, message):
+    cursor.execute("""
+                    INSERT INTO comment (question_id, answer_id, message,  submission_time)
+                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, localtimestamp(0))
+                    """, {"question_id": question_id, "answer_id": answer_id, "message": message})

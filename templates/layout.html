@@ -34,8 +34,11 @@
             {% endfor %}
         </ul>
     </div>
+    <form action="{{ '/search' }}" method="GET" class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="text" name="search_term" placeholder="Search questions">
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+    </form>
 </nav>
-
 <div class="container">
     {% block content %}
 
@@ -50,6 +53,9 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+<script src="/static/main.js"></script>
+
 {% block script %}{% endblock %}
+
 </body>
 </html>

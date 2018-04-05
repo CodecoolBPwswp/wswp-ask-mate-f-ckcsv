@@ -7,35 +7,41 @@ import sql_data_manager
 
 app = Flask(__name__)
 
-column = "submisson_time"
 desc = False
-
+order = "submisson_time"
 
 @app.route('/')
-@app.route('/list')
+@app.route('/list', methods=['GET'])
 def list_questions():
-    global column
     global desc
-    order = request.args.get('order')
-    if column == order:
-        questions = sql_data_manager.read_questions(request.args.get('order'), desc)
+    global order
+    
+    if request.args.get('order') == order:
         desc = not desc
     else:
-        questions = sql_data_manager.read_questions(order)
+        order = request.args.get("order") if request.args.get("order") else "submisson_time"
+    ascdesc = "DESC" if desc else "ASC"
     
-    column = order
+    questions = sql_data_manager.read_questions(order, ascdesc)
+    
     return render_template('questions.html', questions=questions)
 
 
-@app.route('/question/<int:id>')
+@app.route('/question/<int:id>',  methods=['GET', 'POST'])
 def display_question(id):
     answer = sql_data_manager.read_answers_by_question_id(id)
     question = sql_data_manager.read_question_by_id(id)[0]
+    answer_comments = sql_data_manager.answer_comments(id)
     
     if not question:
         abort(404)
-    
-    return render_template("answers.html", answer=answer, question=question)
+
+    if request.method == "POST":
+        sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"])
+        return redirect(url_for("display_question", id=id) + "#ans_" + request.form["answer_id"])
+
+
+    return render_template("answers.html", answer=answer, question=question, answer_comments = answer_comments)
 
 
 @app.route('/add-question')
@@ -114,6 +120,17 @@ def delete_answer(answer_id):
     question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
 
+@app.route('/search', methods=['GET'])
+def search():
+    search_term = request.args.get('search_term', None)
+    search_term = search_term.lower()
+    
+    if not search_term:
+        return redirect(url_for('list_questions'))
+        
+    questions = sql_data_manager.search_questions(search_term)
+    
+    return render_template('search.html', questions=questions)
 
 @app.route('/answer/<answer_id>/edit')
 @app.route('/answer/<answer_id>/edit', methods=['POST'])

@@ -12,10 +12,13 @@
         <div class="card-body">
            <p class="card-text">{{ question.message|safe }}</p>
         </div>
+
         <div class="card-footer ">
             asked {{ question.submisson_time }}
         </div>
     </div>
+
+
 
     {% for item in answer %}
     <div class="card mt-3 text-white">
@@ -34,6 +37,35 @@
             </form>
             <span class="asked">asked: {{ item.submisson_time }}</span>
 
+        </div>
+
+          <hr>
+
+         <div class="card-footer">
+
+           <div class="comments" id="ans_{{item.id}}">
+               <h4>Comments</h4>
+               {% for comment in answer_comments %}
+                    {% if item.id == comment.answer_id %}
+                        <div class="comment">
+                        {{comment.message}}
+                        </div>
+                    {% endif %}
+               {% endfor %}
+           </div>
+
+             <button class="btn btn btn-secondary text-white btn-sm mb-3 mt-3 show_comment">Add comment</button>
+            <div class="new_comment" style="display: none">
+                <form action="" method="post">
+                    <div class="form-group">
+                        <textarea name="message" id="" cols="2" rows="3" class="form-control col-lg-6"></textarea>
+                    </div>
+                    <input type="hidden" name="answer_id" value="{{ item.id }}">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-secondary">Add</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
