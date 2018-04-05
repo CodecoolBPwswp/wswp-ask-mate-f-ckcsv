@@ -14,11 +14,10 @@ th {
     width: 50%;
 }
 
-.comments{
-    border-top: 5px solid #24636d;
-}
-
 .comment {
-    border-top: 1px solid #0f272b;
-    padding: 5px;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 15px;
+    background: #0d292d;
+    width: 75%;
 }
