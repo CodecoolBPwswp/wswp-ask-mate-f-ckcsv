@@ -27,18 +27,18 @@ def list_questions():
     return render_template('questions.html', questions=questions)
 
 
-@app.route('/question/<int:question_id>')
-@app.route('/add_comment', methods=['POST'])
-def display_question(question_id):
-    answer = sql_data_manager.read_answers_by_question_id(question_id)
-    question = sql_data_manager.read_question_by_id(question_id)[0]
-    answer_comments = sql_data_manager.answer_comments(question_id)
+@app.route('/question/<int:id>',  methods=['GET', 'POST'])
+def display_question(id):
+    answer = sql_data_manager.read_answers_by_question_id(id)
+    question = sql_data_manager.read_question_by_id(id)[0]
+    answer_comments = sql_data_manager.answer_comments(id)
     
     if not question:
         abort(404)
 
     if request.method == "POST":
-        sql_data_manager.add_comment()
+        sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"])
+        return redirect(url_for("display_question", id=id))
 
 
     return render_template("answers.html", answer=answer, question=question, answer_comments = answer_comments)

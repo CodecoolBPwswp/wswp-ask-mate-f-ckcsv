@@ -13,3 +13,12 @@ th {
 .answer_img {
     width: 50%;
 }
+
+.comments{
+    border-top: 5px solid #24636d;
+}
+
+.comment {
+    border-top: 1px solid #0f272b;
+    padding: 5px;
+}
