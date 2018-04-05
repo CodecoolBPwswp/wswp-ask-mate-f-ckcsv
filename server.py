@@ -40,9 +40,10 @@ def display_question(id):
     
     if request.method == "POST":
         sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"])
-        return redirect(url_for("display_question", id=id) + "#ans_" + request.form["answer_id"])
-    
-    return render_template("answers.html", answer=answer, question=question, answer_comments=answer_comments)
+        return redirect(url_for("display_question", id=id) + "#" + request.form["answer_id"])
+
+
+    return render_template("answers.html", answer=answer, question=question, answer_comments = answer_comments)
 
 
 @app.route('/add-question')
@@ -139,7 +140,7 @@ def search():
     
     if not search_term:
         return redirect(url_for('list_questions'))
-    
+        
     questions = sql_data_manager.search_questions(search_term)
     
     for question in questions:
@@ -153,19 +154,19 @@ def search():
 @app.route('/answer/<answer_id>/edit', methods=['POST'])
 def edit_answer(answer_id):
     answer = sql_data_manager.read_answer_by_id(answer_id)[0]
-    
+
     if request.method == 'POST':
         try:
             answer['message'] = request.form.get('message', '')
-            
+
             sql_data_manager.update_answer(answer_id, answer['message'])
-            
+
             question_id = sql_data_manager.read_question_id_by_answer_id(answer_id)[0]['question_id']
-            
+
             return redirect('/question/{}'.format(question_id))
         except Exception as e:
             print(e)
-    
+
     return render_template('new-answer.html', edit_data={
         'message': answer['message']
     })

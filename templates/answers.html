@@ -43,7 +43,7 @@
 
          <div class="card-footer">
 
-           <div class="comments" id="ans_{{item.id}}">
+           <div class="comments" id="{{item.id}}">
                <h4>Comments</h4>
                {% for comment in answer_comments %}
                     {% if item.id == comment.answer_id %}
@@ -54,11 +54,10 @@
                {% endfor %}
            </div>
 
-             <button class="btn btn btn-secondary text-white btn-sm mb-3 mt-3 show_comment">Add comment</button>
-            <div class="new_comment" style="display: none">
-                <form action="" method="post">
+            <div class="new_comment">
+                <form action="" method="post" class="mt-3">
                     <div class="form-group">
-                        <textarea name="message" id="" cols="2" rows="3" class="form-control col-lg-6"></textarea>
+                        <textarea name="message" id="" cols="2" rows="2" class="form-control col-lg-6" placeholder="Add comment" required></textarea>
                     </div>
                     <input type="hidden" name="answer_id" value="{{ item.id }}">
                     <div class="form-group">
