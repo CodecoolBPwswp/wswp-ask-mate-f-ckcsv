@@ -36,6 +36,7 @@ def list_questions():
 
 
 @app.route('/question/<int:id>')
+@app.route('/add_comment/<answer_id>', methods=['POST'])
 def display_question(id):
     answer = sql_data_manager.read_answers_by_question_id(id)
     question = sql_data_manager.read_question_by_id(id)[0]
@@ -123,9 +124,6 @@ def delete_answer(answer_id):
     question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
 
-@app.route('/add_comment/<answer_id>', methods=['POST'])
-def add_comment():
-    pass
 
 if __name__ == '__main__':
     app.secret_key = "topsecret"
