@@ -15,8 +15,16 @@ th {
 }
 
 mark {
-    background-color: yellow;
-    color: black;
+    border: yellow solid 1.2px;
+    color: rgba(255, 255, 255, 0.82);
+    background-color: rgba(255, 255, 0, 0.24);
+    border-radius: 3px;
+}
+
+
+.inline {
+    display: inline;
+
 }
 
 .comment {

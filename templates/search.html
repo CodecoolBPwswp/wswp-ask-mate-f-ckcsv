@@ -4,7 +4,7 @@
 
 
 {% block content %}
-    <table class="table table-hover table-responsive-lg">
+    <table class="table table-responsive-lg">
         <tr class="bg-dark">
             <th>Question ID</th>
             <th>Question</th>
@@ -15,16 +15,34 @@
         </tr>
         {% for question in questions %}
             <tr>
-                <td>{{ question.id }}</td>
-                <td><a href="/question/{{ question.id }}">{{ question.title|safe }}</a></td>
+                <td class="font-weight-bold">{{ question.id }}</td>
+                <td><a href="/question/{{ question.id }}" class="font-weight-bold">{{ question.title|safe }}</a></td>
                 <td>{{ question.view_number }}</td>
                 <td>{{ question.vote_number }}</td>
                 <td>{{ question.submisson_time }}</td>
             </tr>
-            <tr style="border-bottom: 3px;">
-                <td>Message</td>
-                <td colspan="4">{{ question.message|safe }}</td>
+            <tr>
+                <td><i class="fas fa-angle-right"></i></td>
+                <td colspan="4"><span
+                        class="card bg-primary p-2 text-light"><span class="inline">{{ question
+                        .message|safe }}</span></span></td>
             </tr>
+            {% for answer in answers %}
+                {% if answer.question_id == question.id %}
+                    <tr>
+                        <td><i class="fas fa-angle-double-right"></i></td>
+                        <td colspan="4">
+                            <span class="card border-dark p-2 ml-5">
+                                <span class="inline">
+                               {{ answer.message|safe }}
+                                </span>
+                            </span>
+                        </td>
+                    </tr>
+                {% endif %}
+
+
+            {% endfor %}
         {% endfor %}
     </table>
 {% endblock %}

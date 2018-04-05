@@ -26,7 +26,7 @@
             {{ item.message|safe }}
             <img src="{{ item.image }}" class="rounded img-fluid d-block answer_img" alt="">
         </div>
-        <div class="card-footer ">
+        <div class="card-footer">
             <form method="post" action="{{ url_for('display_question', id=question.id) }}/vote-up" id="answer_form">
                 <span class="btn btn-primary">{{ item["vote_number"] }}</span>
                 <input type="hidden" name="answer_id" value="{{ item.id }}">
