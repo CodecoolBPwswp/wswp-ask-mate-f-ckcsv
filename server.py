@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 
 import sql_data_manager
 
+UPLOAD_FOLDER = sql_data_manager.UPLOAD_FOLDER
 app = Flask(__name__)
 
 desc = False
@@ -28,7 +29,7 @@ def list_questions():
     return render_template('questions.html', questions=questions)
 
 
-@app.route('/question/<int:id>',  methods=['GET', 'POST'])
+@app.route('/question/<int:id>', methods=['GET', 'POST'])
 def display_question(id):
     answer = sql_data_manager.read_answers_by_question_id(id)
     question = sql_data_manager.read_question_by_id(id)[0]
@@ -62,7 +63,7 @@ def answer_form(question_id):
         file = None
         if request.files:
             file = request.files['file']
-            if file and allowed_file(file.filename):
+            if file and sql_data_manager.allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.getcwd() + os.path.join(app.config['UPLOAD_FOLDER'], filename))
         
@@ -143,6 +144,7 @@ def search():
     
     for question in questions:
         question['title'] = highlight(question['title'], search_term)
+        question['message'] = highlight(question['message'], search_term)
     
     return render_template('search.html', questions=questions)
 
