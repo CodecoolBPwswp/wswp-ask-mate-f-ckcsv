@@ -107,7 +107,7 @@ def page_not_found(e):
 def vote(question_id, type):
     answer_id = request.form["answer_id"]
     sql_data_manager.update_vote(answer_id, type)
-    return redirect(url_for("display_question", id=question_id))
+    return redirect(url_for("display_question", id=question_id) + "#v_" + answer_id)
 
 
 @app.route('/question/<question_id>/delete')
