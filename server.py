@@ -130,9 +130,7 @@ def search():
         
     questions = sql_data_manager.search_questions(search_term)
     
-    template = render_template('search.html', questions=questions)
-    
-    return template
+    return render_template('search.html', questions=questions)
 
 if __name__ == '__main__':
     app.secret_key = "topsecret"
