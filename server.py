@@ -34,7 +34,7 @@ def display_question(id):
     answer = sql_data_manager.read_answers_by_question_id(id)
     question = sql_data_manager.read_question_by_id(id)[0]
     answer_comments = sql_data_manager.answer_comments(id)
-    
+
     if not question:
         abort(404)
     
@@ -169,6 +169,15 @@ def edit_answer(answer_id):
     return render_template('new-answer.html', edit_data={
         'message': answer['message']
     })
+
+
+@app.route('/comment/<comment_id>/delete')
+def delete_comment(comment_id):
+
+    sql_data_manager.delete_comment(comment_id)
+
+    question_id = sql_data_manager.read_question_id_by_comment_id(comment_id)
+
 
 
 if __name__ == '__main__':

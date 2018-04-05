@@ -178,3 +178,11 @@ def add_comment(cursor, question_id, answer_id, message):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@database_common.connection_handler
+def delete_comment(cursor, id):
+    cursor.execute("""
+                   DELETE FROM comment
+                   WHERE id = %(id)s
+                    """, {'id':id})
