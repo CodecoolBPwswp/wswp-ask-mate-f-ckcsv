@@ -174,12 +174,29 @@ def edit_answer(answer_id):
 @app.route('/comment/<comment_id>/delete')
 def delete_comment(comment_id):
 
+    question_id = sql_data_manager.read_question_id_by_comment_id(comment_id)[0]['question_id']
+
     sql_data_manager.delete_comment(comment_id)
 
-    question_id = sql_data_manager.read_question_id_by_comment_id(comment_id)
+    return redirect('/question/{}'.format(question_id))
 
+
+@app.route('/comment/<comment_id>/edit')
+@app.route('/comment/<comment_id>/edit', methods=['POST'])
+def edit_comment(comment_id):
+
+    comment_to_edit = int(comment_id)
+    question_id = sql_data_manager.read_question_id_by_comment_id(comment_id)[0]['question_id']
+
+    if request.method == 'POST':
+        sql_data_manager.edit_comment(18, request.form["message"])
+        return redirect(url_for("display_question", id=question_id))
+
+    return redirect(url_for("display_question", id=question_id, comment_to_edit=comment_to_edit))
 
 
 if __name__ == '__main__':
     app.secret_key = "topsecret"
     app.run(debug=True, host='0.0.0.0', port=5000)
+
+

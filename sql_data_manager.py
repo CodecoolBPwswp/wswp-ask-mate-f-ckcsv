@@ -143,6 +143,17 @@ def read_question_id_by_answer_id(cursor, answer_id):
     return question_id
 
 @database_common.connection_handler
+def read_question_id_by_comment_id(cursor, comment_id):
+    cursor.execute("""
+        SELECT question_id FROM comment WHERE id = %(comment_id)s
+    """, {'comment_id': comment_id})
+
+    question_id = cursor.fetchall()
+
+    return question_id
+
+
+@database_common.connection_handler
 def search_questions(cursor, search_term):
     cursor.execute(
             """
@@ -160,7 +171,7 @@ def search_questions(cursor, search_term):
 @database_common.connection_handler
 def answer_comments(cursor, question_id):
     cursor.execute("""
-                    SELECT answer_id, message FROM comment
+                    SELECT id, answer_id, message FROM comment
                     WHERE question_id = %(question_id)s   
                 """, {'question_id': question_id})
 
@@ -186,3 +197,11 @@ def delete_comment(cursor, id):
                    DELETE FROM comment
                    WHERE id = %(id)s
                     """, {'id':id})
+
+
+@database_common.connection_handler
+def edit_comment(cursor, id, message):
+    cursor.execute("""
+                   UPDATE comment SET message = %(message)s, submission_time = localtimestamp(0)
+                   WHERE id = %(id)s
+                    """, {'id':id, 'message':message})
