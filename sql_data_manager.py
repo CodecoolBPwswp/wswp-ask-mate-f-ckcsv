@@ -32,9 +32,9 @@ def read_answer_by_id(cursor, id):
     cursor.execute("""
         SELECT * FROM answer WHERE id = %(id)s
     """, {'id': id})
-
+    
     answer = cursor.fetchall()
-
+    
     return answer
 
 
@@ -80,14 +80,15 @@ def update_question(cursor, id, title, message):
             """, {'id': id, 'title': title, 'message': message}
     )
 
+
 @database_common.connection_handler
 def update_answer(cursor, id, message):
     message = message.replace('\r', '').replace('\n', '<br>')
     cursor.execute(
-        """
-        UPDATE answer SET submisson_time = localtimestamp(0), message = %(message)s
-        WHERE id=%(id)s
-        """, {'id': id, 'message': message}
+            """
+            UPDATE answer SET submisson_time = localtimestamp(0), message = %(message)s
+            WHERE id=%(id)s
+            """, {'id': id, 'message': message}
     )
 
 
@@ -118,7 +119,7 @@ def delete_question(cursor, id):
 def delete_answer(cursor, id):
     cursor.execute(
             """
-            SELECT question_id from answer WHERE id=%(id)s
+            SELECT question_id FROM answer WHERE id=%(id)s
             """, {'id': id}
     )
     result = cursor.fetchall()
@@ -137,10 +138,11 @@ def read_question_id_by_answer_id(cursor, answer_id):
     cursor.execute("""
         SELECT question_id FROM answer WHERE id = %(answer_id)s
     """, {'answer_id': answer_id})
-
+    
     question_id = cursor.fetchall()
-
+    
     return question_id
+
 
 @database_common.connection_handler
 def read_question_id_by_comment_id(cursor, comment_id):
@@ -162,10 +164,25 @@ def search_questions(cursor, search_term):
             ORDER BY submisson_time DESC
             """, {'search_term': ('%' + search_term + '%')}
     )
-
+    
     questions = cursor.fetchall()
-
+    
     return questions
+
+
+@database_common.connection_handler
+def search_answers(cursor, search_term):
+    cursor.execute(
+            """
+            SELECT message, question_id FROM answer
+            WHERE LOWER(message) LIKE %(search_term)s
+            ORDER BY submisson_time DESC
+            """, {'search_term': ('%' + search_term + '%')}
+    )
+    
+    answers = cursor.fetchall()
+    
+    return answers
 
 
 @database_common.connection_handler
@@ -174,10 +191,11 @@ def answer_comments(cursor, question_id):
                     SELECT id, answer_id, message FROM comment
                     WHERE question_id = %(question_id)s   
                 """, {'question_id': question_id})
-
+    
     comments = cursor.fetchall()
-
+    
     return comments
+
 
 @database_common.connection_handler
 def add_comment(cursor, question_id, answer_id, message):
@@ -185,6 +203,7 @@ def add_comment(cursor, question_id, answer_id, message):
                     INSERT INTO comment (question_id, answer_id, message,  submission_time)
                     VALUES (%(question_id)s, %(answer_id)s, %(message)s, localtimestamp(0))
                     """, {"question_id": question_id, "answer_id": answer_id, "message": message})
+
 
 def allowed_file(filename):
     return '.' in filename and \

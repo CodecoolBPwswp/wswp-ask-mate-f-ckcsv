@@ -34,7 +34,7 @@ def display_question(id):
     answer = sql_data_manager.read_answers_by_question_id(id)
     question = sql_data_manager.read_question_by_id(id)[0]
     answer_comments = sql_data_manager.answer_comments(id)
-
+    
     if not question:
         abort(404)
     
@@ -42,7 +42,7 @@ def display_question(id):
         sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"])
         return redirect(url_for("display_question", id=id) + "#" + request.form["answer_id"])
 
-    return render_template("answers.html", answer=answer, question=question, answer_comments = answer_comments)
+    return render_template("answers.html", answer=answer, question=question, answer_comments=answer_comments)
 
 
 @app.route('/add-question')
@@ -123,13 +123,14 @@ def delete_answer(answer_id):
 
 
 def highlight(text: str, term: str):
-    return text.replace(
-            term.title(), "<mark>" + term.title() + "</mark>"
+    text = text.replace(
+            term.title(), "<mark>" + term.title().strip() + "</mark>"
     ).replace(
-            term.lower(), "<mark>" + term.title() + "</mark>"
+            term.lower(), "<mark>" + term.lower() + "</mark>"
     ).replace(
-            term.upper(), "<mark>" + term.title() + "</mark>"
+            term.upper(), "<mark>" + term.upper() + "</mark>"
     )
+    return text
 
 
 @app.route('/search', methods=['GET'])
@@ -139,14 +140,20 @@ def search():
     
     if not search_term:
         return redirect(url_for('list_questions'))
-        
+
     questions = sql_data_manager.search_questions(search_term)
-    
+    answers = sql_data_manager.search_answers(search_term)
+
     for question in questions:
         question['title'] = highlight(question['title'], search_term)
         question['message'] = highlight(question['message'], search_term)
     
-    return render_template('search.html', questions=questions)
+    for answer in answers:
+        answer['message'] = highlight(answer['message'], search_term)
+
+    print(answers)
+
+    return render_template('search.html', questions=questions, answers=answers)
 
 
 @app.route('/answer/<answer_id>/edit')
@@ -198,5 +205,3 @@ def edit_comment(comment_id):
 if __name__ == '__main__':
     app.secret_key = "topsecret"
     app.run(debug=True, host='0.0.0.0', port=5000)
-
-
