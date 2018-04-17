@@ -28,8 +28,8 @@
             <form method="post" action="{{ url_for('display_question', id=question.id) }}/vote-up" id="answer_form">
                 <span class="btn btn-primary" >{{ item["vote_number"] }}</span>
                 <input type="hidden" name="answer_id" value="{{ item.id }}">
-                <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-up">VOTE UP</button>
-                <button type="submit" class="btn btn-secondary" formaction="{{ url_for('display_question', id=question.id) }}/vote-down">VOTE DOWN</button>
+                <button type="submit" class="btn btn-secondary" formaction="{{ url_for('vote', question_id=question.id, type="vote-up") }}">VOTE UP</button>
+                <button type="submit" class="btn btn-secondary" formaction="{{ url_for('vote', question_id=question.id, type="vote-down") }}">VOTE DOWN</button>
                 <button type="submit" class="btn btn-secondary" formaction="{{ url_for('delete_answer', answer_id=item.id) }}">DELETE</button>
             </form>
             <a href="{{ url_for('edit_answer', answer_id=item.id) }}" class="ml-1"><button class="btn btn-secondary">EDIT</button></a>
@@ -42,27 +42,12 @@
                <h4>Comments</h4>
                {% for comment in answer_comments %}
                     {% if item.id == comment.answer_id %}
-{#                        {% if comment.id == 18 %}#}
-{#                            <div class="edit_comment">#}
-{#                                <form action="{{ url_for('edit_comment', comment_id=18) }}" method="post" class="mt-3">#}
-{#                                    <div class="form-group">#}
-{#                                        <textarea name="message" id="" cols="2" rows="2" class="form-control col-lg-6" maxlength="140" required>{{ comment.message }}</textarea>#}
-{#                                    </div>#}
-{#                                    <input type="hidden" name="answer_id" value="{{ item.id }}">#}
-{#                                    <div class="form-group">#}
-{#                                        <button type="submit" class="btn btn-secondary">Edit</button>#}
-{#                                    </div>#}
-{#                                </form>#}
-{#                            </div>#}
-{#                        {% else %}#}
                         <div class="comment">
                         {{comment.message}}
                         {{ comment_to_edit }}
                         <a href="{{url_for('delete_comment', comment_id=comment.id)}}"><button class="btn btn-primary text-white">Delete</button></a>
-{#                        <a href="{{url_for('edit_comment', comment_id=comment.id)}}"><button class="btn btn-primary text-white">Edit</button></a>#}
                         </div>
                         {% endif %}
-{#                    {% endif %}#}
                {% endfor %}
            </div>
             <div class="new_comment">
