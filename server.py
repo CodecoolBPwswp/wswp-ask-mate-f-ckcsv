@@ -202,6 +202,14 @@ def edit_comment(comment_id):
     return redirect(url_for("display_question", id=question_id, comment_to_edit=comment_to_edit))
 
 
+@app.route('/list-users')
+def list_users():
+
+    user_list = sql_data_manager.list_users()
+
+    return render_template('list_users.html', user_list=user_list)
+
+
 if __name__ == '__main__':
     app.secret_key = "topsecret"
     app.run(debug=True, host='0.0.0.0', port=5000)

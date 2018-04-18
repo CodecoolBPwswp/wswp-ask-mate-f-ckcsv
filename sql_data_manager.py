@@ -224,3 +224,14 @@ def edit_comment(cursor, id, message):
                    UPDATE comment SET message = %(message)s, submission_time = localtimestamp(0)
                    WHERE id = %(id)s
                     """, {'id':id, 'message':message})
+
+
+@database_common.connection_handler
+def list_users(cursor):
+    cursor.execute("""
+                   SELECT id, username, reputation FROM "user"
+                    """)
+
+    user_list = cursor.fetchall()
+
+    return user_list
