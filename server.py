@@ -6,6 +6,7 @@ import sql_data_manager
 
 UPLOAD_FOLDER = sql_data_manager.UPLOAD_FOLDER
 app = Flask(__name__)
+app.secret_key = "234o23uiféojvweőirg39fuü2müdfővpk"
 app.register_blueprint(user_page)
 
 desc = False
@@ -205,5 +206,4 @@ def edit_comment(comment_id):
 
 
 if __name__ == '__main__':
-    app.secret_key = "topsecret"
     app.run(debug=True, host='0.0.0.0', port=5000)
