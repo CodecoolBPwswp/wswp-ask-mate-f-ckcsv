@@ -209,6 +209,27 @@ def edit_comment(comment_id):
     return redirect(url_for("display_question", id=question_id, comment_to_edit=comment_to_edit))
 
 
+@app.route('/list-users')
+def list_users():
+
+    user_list = sql_data_manager.list_users()
+
+    return render_template('list_users.html', user_list=user_list)
+
+
+@app.route('/user/<user_id>')
+def user_page(user_id):
+
+    username = sql_data_manager.list_users(user_id)[0]['username']
+
+    user_questions = sql_data_manager.user_questions(user_id)
+
+    user_answers = sql_data_manager.user_answers(user_id)
+
+    user_comments = sql_data_manager.user_comments(user_id)
+
+    return render_template('user_page.html', user_questions=user_questions,
+                           user_answers=user_answers, user_comments=user_comments, username=username)
 
 
 if __name__ == '__main__':

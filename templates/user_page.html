@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    {{ username }}
+{% endblock %}
+
+
+{% block content %}
+<h1>{{ username }}</h1>
+   <h3>Questions</h3>
+    <table class="table table-hover table-responsive-lg">
+        <tr class="bg-dark">
+            <th>Question ID</th>
+            <th>Title</th>
+            <th>View Number</th>
+            <th>Vote Number</th>
+            <th>Submission Time</th>
+        </tr>
+        {% for question in user_questions %}
+            <tr>
+                <td>{{ question.id }}</td>
+                <td><a href="{{ url_for('display_question', id=question.id) }}">{{ question.title }}</a></td>
+                <td>{{ question.view_number }}</td>
+                <td>{{ question.vote_number }}</td>
+                <td>{{ question.submisson_time }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Answers</h3>
+     <table class="table table-hover table-responsive-lg">
+        <tr class="bg-dark">
+            <th>Answer ID</th>
+            <th>Message</th>
+            <th>Vote Number</th>
+            <th>Submission Time</th>
+        </tr>
+        {% for answer in user_answers %}
+            <tr>
+                <td>{{ answer.id }}</td>
+                <td><a href="{{ url_for('display_question', id=answer.question_id) }}">{{ answer.message }}</td>
+                <td>{{ answer.vote_number }}</td>
+                <td>{{ answer.submisson_time }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Comments</h3>
+    <table class="table table-hover table-responsive-lg">
+        <tr class="bg-dark">
+            <th>User ID</th>
+            <th>Username</th>
+        </tr>
+        {% for comment in user_comments %}
+            <tr>
+                <td>{{ comment.id }}</td>
+                <td><a href="{{ url_for('display_question', id=comment.question_id) }}">{{ comment.message }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

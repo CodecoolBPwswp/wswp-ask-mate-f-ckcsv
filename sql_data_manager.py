@@ -44,16 +44,18 @@ def get_image_name_by_answer_id(cursor, answer_id):
     cursor.execute("""
         SELECT image FROM answer WHERE id = %(id)s
     """, {'id': answer_id})
-    
+
     path = cursor.fetchone()
-    
+
     return path
 
 
 @database_common.connection_handler
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
-            SELECT * FROM answer WHERE question_id = %(id)s ORDER BY id ASC
+            SELECT submisson_time, vote_number, image, message, username FROM "answer" 
+            INNER JOIN "user" ON "answer".user_id = "user".id 
+            WHERE question_id = %(id)s ORDER BY "answer".id ASC
         """, {'id': id})
     
     answer = cursor.fetchall()
@@ -66,9 +68,9 @@ def get_answer_ids_by_question_id(cursor, question_id):
     cursor.execute("""
             SELECT id FROM answer WHERE question_id = %(question_id)s
         """, {'question_id': question_id})
-    
+
     answer = cursor.fetchall()
-    
+
     return answer
 
 
@@ -172,9 +174,9 @@ def read_question_id_by_comment_id(cursor, comment_id):
     cursor.execute("""
         SELECT question_id FROM comment WHERE id = %(comment_id)s
     """, {'comment_id': comment_id})
-    
+
     question_id = cursor.fetchall()
-    
+
     return question_id
 
 
@@ -263,13 +265,13 @@ def verify_password(plain_text_password, hashed_password):
 @database_common.connection_handler
 def registration(cursor, username, password):
     hash_pass = hash_password(password)
-    
+
     cursor.execute("""
                     INSERT INTO "user" (username, password) VALUES(%(username)s, %(password)s) RETURNING *; 
                     """, {"username": username, "password": hash_pass})
-    
+
     data = cursor.fetchone()
-    
+
     return data
 
 
@@ -279,9 +281,9 @@ def check_if_user_exists(cursor, username):
                     SELECT * FROM "user"
                     WHERE username=%(username)s
                     """, {"username": username})
-    
+
     data = cursor.fetchone()
-    
+
     return data
 
 
@@ -291,16 +293,69 @@ def get_user_hashed_password(cursor, username):
                     SELECT password FROM "user"
                     WHERE username = %(username)s
                     """, {"username": username})
-    
+
     password = cursor.fetchone()
     return password["password"]
 
 
 def login(username, password):
     check_user = check_if_user_exists(username)
-    
+
     if check_user:
         hash_pass = get_user_hashed_password(username)
         if verify_password(password, hash_pass):
             return True
     return False
+
+
+@database_common.connection_handler
+def list_users(cursor, user_id=None):
+    if user_id:
+        cursor.execute("""
+                           SELECT id, username, reputation FROM "user"
+                           WHERE id = %(user_id)s
+                            """, {'user_id': user_id})
+    else:
+        cursor.execute("""
+                   SELECT id, username, reputation FROM "user"
+                    """)
+
+    user_list = cursor.fetchall()
+
+    return user_list
+
+
+@database_common.connection_handler
+def user_questions(cursor, user_id):
+    cursor.execute("""
+                   SELECT id, title, view_number, vote_number, submisson_time FROM question
+                   WHERE user_id=%(user_id)s
+                    """, {'user_id':user_id})
+
+    user_questions = cursor.fetchall()
+
+    return user_questions
+
+
+@database_common.connection_handler
+def user_answers(cursor, user_id):
+    cursor.execute("""
+                   SELECT id, message, vote_number, submisson_time, question_id FROM answer
+                   WHERE user_id=%(user_id)s
+                    """, {'user_id':user_id})
+
+    user_answers = cursor.fetchall()
+
+    return user_answers
+
+
+@database_common.connection_handler
+def user_comments(cursor, user_id):
+    cursor.execute("""
+                   SELECT id, message, question_id FROM comment
+                   WHERE user_id=%(user_id)s
+                    """, {'user_id':user_id})
+
+    user_comments = cursor.fetchall()
+
+    return user_comments
