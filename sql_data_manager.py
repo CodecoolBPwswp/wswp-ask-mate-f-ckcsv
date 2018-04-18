@@ -250,6 +250,7 @@ def registration(cursor, username, password):
 
     return data
 
+
 @database_common.connection_handler
 def check_if_user_exists(cursor, username):
 
@@ -261,3 +262,27 @@ def check_if_user_exists(cursor, username):
     data = cursor.fetchone()
 
     return data
+
+
+@database_common.connection_handler
+def get_user_hashed_password(cursor, username):
+    cursor.execute("""
+                    SELECT password FROM "user"
+                    WHERE username = %(username)s
+                    """, {"username": username})
+
+    password = cursor.fetchone()
+    return password["password"]
+
+
+
+def login(username, password):
+
+    check_user = check_if_user_exists(username)
+
+    if check_user:
+        hash_pass = get_user_hashed_password(username)
+        if verify_password(password, hash_pass):
+            return True
+    return False
+
