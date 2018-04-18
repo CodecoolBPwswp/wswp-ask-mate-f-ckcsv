@@ -227,8 +227,14 @@ def edit_comment(cursor, id, message):
 
 
 @database_common.connection_handler
-def list_users(cursor):
-    cursor.execute("""
+def list_users(cursor, user_id=None):
+    if user_id:
+        cursor.execute("""
+                           SELECT id, username, reputation FROM "user"
+                           WHERE id = %(user_id)s
+                            """, {'user_id': user_id})
+    else:
+        cursor.execute("""
                    SELECT id, username, reputation FROM "user"
                     """)
 
@@ -240,7 +246,7 @@ def list_users(cursor):
 @database_common.connection_handler
 def user_questions(cursor, user_id):
     cursor.execute("""
-                   SELECT id, title, view_number, vote_number, submission_time FROM question
+                   SELECT id, title, view_number, vote_number, submisson_time FROM question
                    WHERE user_id=%(user_id)s
                     """, {'user_id':user_id})
 
@@ -252,7 +258,7 @@ def user_questions(cursor, user_id):
 @database_common.connection_handler
 def user_answers(cursor, user_id):
     cursor.execute("""
-                   SELECT id, message, vote_number, submission_time FROM answer
+                   SELECT id, message, vote_number, submisson_time, question_id FROM answer
                    WHERE user_id=%(user_id)s
                     """, {'user_id':user_id})
 
@@ -264,7 +270,7 @@ def user_answers(cursor, user_id):
 @database_common.connection_handler
 def user_comments(cursor, user_id):
     cursor.execute("""
-                   SELECT id, message FROM comment
+                   SELECT id, message, question_id FROM comment
                    WHERE user_id=%(user_id)s
                     """, {'user_id':user_id})
 
