@@ -235,3 +235,39 @@ def list_users(cursor):
     user_list = cursor.fetchall()
 
     return user_list
+
+
+@database_common.connection_handler
+def user_questions(cursor, user_id):
+    cursor.execute("""
+                   SELECT id, title, view_number, vote_number, submission_time FROM question
+                   WHERE user_id=%(user_id)s
+                    """, {'user_id':user_id})
+
+    user_questions = cursor.fetchall()
+
+    return user_questions
+
+
+@database_common.connection_handler
+def user_answers(cursor, user_id):
+    cursor.execute("""
+                   SELECT id, message, vote_number, submission_time FROM answer
+                   WHERE user_id=%(user_id)s
+                    """, {'user_id':user_id})
+
+    user_answers = cursor.fetchall()
+
+    return user_answers
+
+
+@database_common.connection_handler
+def user_comments(cursor, user_id):
+    cursor.execute("""
+                   SELECT id, message FROM comment
+                   WHERE user_id=%(user_id)s
+                    """, {'user_id':user_id})
+
+    user_comments = cursor.fetchall()
+
+    return user_comments

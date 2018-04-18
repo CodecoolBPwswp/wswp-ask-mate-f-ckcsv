@@ -210,6 +210,18 @@ def list_users():
     return render_template('list_users.html', user_list=user_list)
 
 
+@app.route('/user/<user_id>')
+def user_page():
+
+    user_questions
+
+    user_answers
+
+    user_comments
+
+    return render_template('list_users.html', user_list=user_list)
+
+
 if __name__ == '__main__':
     app.secret_key = "topsecret"
     app.run(debug=True, host='0.0.0.0', port=5000)
