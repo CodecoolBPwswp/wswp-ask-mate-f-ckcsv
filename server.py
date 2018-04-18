@@ -113,6 +113,9 @@ def vote(question_id, type):
 
 @app.route('/question/<question_id>/delete')
 def delete_question(question_id):
+    answer_ids = sql_data_manager.get_answer_ids_by_question_id(question_id)
+    for answer_id in answer_ids:
+        delete_answer(answer_id.get('id'))
     sql_data_manager.delete_question(question_id)
     return redirect(url_for("list_questions"))
 
@@ -120,8 +123,8 @@ def delete_question(question_id):
 @app.route('/delete_answer/<answer_id>', methods=['POST'])
 def delete_answer(answer_id):
     image_path = sql_data_manager.get_image_name_by_answer_id(answer_id)
-    if image_path:
-        os.remove(image_path)
+    if UPLOAD_FOLDER in image_path:
+        os.remove(os.getcwd() + image_path.get('image'))
     question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
 
