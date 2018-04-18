@@ -21,3 +21,19 @@ def registration():
 
 
     return render_template("registration.html")
+
+
+@user_page.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+        if sql_data_manager.login(request.form["username"], request.form["password"]):
+            session["username"] = request.form["username"]
+            flash("Successfull login!", "success")
+            return redirect(url_for("list_questions"))
+        else:
+            flash("No user found with :(", "error")
+            return redirect(url_for("user_page.login"))
+
+
+    return render_template("login.html")
