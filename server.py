@@ -1,12 +1,12 @@
 import os
-
-from flask import Flask, render_template, request, redirect, url_for, abort
 from werkzeug.utils import secure_filename
+from user import *
 
 import sql_data_manager
 
 UPLOAD_FOLDER = sql_data_manager.UPLOAD_FOLDER
 app = Flask(__name__)
+app.register_blueprint(user_page)
 
 desc = False
 order = "submisson_time"
@@ -200,6 +200,8 @@ def edit_comment(comment_id):
         return redirect(url_for("display_question", id=question_id))
 
     return redirect(url_for("display_question", id=question_id, comment_to_edit=comment_to_edit))
+
+
 
 
 if __name__ == '__main__':

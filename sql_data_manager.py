@@ -1,4 +1,5 @@
 import database_common
+import bcrypt
 
 UPLOAD_FOLDER = '/static/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -224,3 +225,39 @@ def edit_comment(cursor, id, message):
                    UPDATE comment SET message = %(message)s, submission_time = localtimestamp(0)
                    WHERE id = %(id)s
                     """, {'id':id, 'message':message})
+
+
+def hash_password(plain_text_password):
+    # By using bcrypt, the salt is saved into the hash itself
+    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
+
+
+def verify_password(plain_text_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+
+@database_common.connection_handler
+def registration(cursor, username, password):
+    hash_pass = hash_password(password)
+
+    cursor.execute("""
+                    INSERT INTO "user" (username, password) VALUES(%(username)s, %(password)s) RETURNING *; 
+                    """, {"username": username, "password": hash_pass})
+
+    data = cursor.fetchone()
+
+    return data
+
+@database_common.connection_handler
+def check_if_user_exists(cursor, username):
+
+    cursor.execute("""
+                    SELECT * FROM "user"
+                    WHERE username=%(username)s
+                    """, {"username": username})
+
+    data = cursor.fetchone()
+
+    return data
