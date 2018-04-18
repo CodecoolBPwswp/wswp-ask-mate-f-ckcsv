@@ -53,7 +53,9 @@ def get_image_name_by_answer_id(cursor, answer_id):
 @database_common.connection_handler
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
-            SELECT * FROM answer WHERE question_id = %(id)s ORDER BY id ASC
+            SELECT submisson_time, vote_number, image, message, username FROM "answer" 
+            INNER JOIN "user" ON "answer".user_id = "user".id 
+            WHERE question_id = %(id)s ORDER BY "answer".id ASC
         """, {'id': id})
     
     answer = cursor.fetchall()
