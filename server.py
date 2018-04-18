@@ -1,12 +1,13 @@
 import os
-
-from flask import Flask, render_template, request, redirect, url_for, abort
 from werkzeug.utils import secure_filename
+from user import *
 
 import sql_data_manager
 
 UPLOAD_FOLDER = sql_data_manager.UPLOAD_FOLDER
 app = Flask(__name__)
+app.secret_key = "234o23uiféojvweőirg39fuü2müdfővpk"
+app.register_blueprint(user_page)
 
 desc = False
 order = "submisson_time"
@@ -65,7 +66,7 @@ def answer_form(question_id):
             file = request.files['file']
             if file and sql_data_manager.allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file.save(os.getcwd() + os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                file.save(os.getcwd() + os.path.join(UPLOAD_FOLDER, filename))
         
         message = request.form.get('message')
         image = UPLOAD_FOLDER + filename if file else ''
@@ -112,12 +113,18 @@ def vote(question_id, type):
 
 @app.route('/question/<question_id>/delete')
 def delete_question(question_id):
+    answer_ids = sql_data_manager.get_answer_ids_by_question_id(question_id)
+    for answer_id in answer_ids:
+        delete_answer(answer_id.get('id'))
     sql_data_manager.delete_question(question_id)
     return redirect(url_for("list_questions"))
 
 
 @app.route('/delete_answer/<answer_id>', methods=['POST'])
 def delete_answer(answer_id):
+    image_path = sql_data_manager.get_image_name_by_answer_id(answer_id)
+    if UPLOAD_FOLDER in image_path:
+        os.remove(os.getcwd() + image_path.get('image'))
     question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
 
@@ -226,5 +233,4 @@ def user_page(user_id):
 
 
 if __name__ == '__main__':
-    app.secret_key = "topsecret"
     app.run(debug=True, host='0.0.0.0', port=5000)

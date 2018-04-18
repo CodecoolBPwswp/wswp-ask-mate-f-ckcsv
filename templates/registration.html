@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block title %}Registration page{% endblock %}
+
+
+{% block content %}
+
+    <h1 class="col-lg-3">Registration</h1>
+
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-dismissible alert-danger">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <span>{{messages[0]}}</span>
+        </div>
+      {% endif %}
+    {% endwith %}
+
+   <form method="post">
+  <fieldset class="col-md-3">
+
+    <div class=" form-group">
+      <label for="username">Username</label>
+      <input type="text" class="form-control" name="username" id="username" placeholder="Username">
+    </div>
+    <div class=" form-group">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </fieldset>
+</form>
+{% endblock %}

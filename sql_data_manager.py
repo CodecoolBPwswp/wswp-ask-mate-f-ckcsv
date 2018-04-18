@@ -1,4 +1,5 @@
 import database_common
+import bcrypt
 
 UPLOAD_FOLDER = '/static/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -39,13 +40,37 @@ def read_answer_by_id(cursor, id):
 
 
 @database_common.connection_handler
+def get_image_name_by_answer_id(cursor, answer_id):
+    cursor.execute("""
+        SELECT image FROM answer WHERE id = %(id)s
+    """, {'id': answer_id})
+
+    path = cursor.fetchone()
+
+    return path
+
+
+@database_common.connection_handler
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
-            SELECT * FROM answer WHERE question_id = %(id)s ORDER BY id ASC
+            SELECT submisson_time, vote_number, image, message, username FROM "answer" 
+            INNER JOIN "user" ON "answer".user_id = "user".id 
+            WHERE question_id = %(id)s ORDER BY "answer".id ASC
         """, {'id': id})
     
     answer = cursor.fetchall()
     
+    return answer
+
+
+@database_common.connection_handler
+def get_answer_ids_by_question_id(cursor, question_id):
+    cursor.execute("""
+            SELECT id FROM answer WHERE question_id = %(question_id)s
+        """, {'question_id': question_id})
+
+    answer = cursor.fetchall()
+
     return answer
 
 
@@ -215,7 +240,7 @@ def delete_comment(cursor, id):
     cursor.execute("""
                    DELETE FROM comment
                    WHERE id = %(id)s
-                    """, {'id':id})
+                    """, {'id': id})
 
 
 @database_common.connection_handler
@@ -223,7 +248,64 @@ def edit_comment(cursor, id, message):
     cursor.execute("""
                    UPDATE comment SET message = %(message)s, submission_time = localtimestamp(0)
                    WHERE id = %(id)s
-                    """, {'id':id, 'message':message})
+                    """, {'id': id, 'message': message})
+
+
+def hash_password(plain_text_password):
+    # By using bcrypt, the salt is saved into the hash itself
+    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
+
+
+def verify_password(plain_text_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+
+@database_common.connection_handler
+def registration(cursor, username, password):
+    hash_pass = hash_password(password)
+
+    cursor.execute("""
+                    INSERT INTO "user" (username, password) VALUES(%(username)s, %(password)s) RETURNING *; 
+                    """, {"username": username, "password": hash_pass})
+
+    data = cursor.fetchone()
+
+    return data
+
+
+@database_common.connection_handler
+def check_if_user_exists(cursor, username):
+    cursor.execute("""
+                    SELECT * FROM "user"
+                    WHERE username=%(username)s
+                    """, {"username": username})
+
+    data = cursor.fetchone()
+
+    return data
+
+
+@database_common.connection_handler
+def get_user_hashed_password(cursor, username):
+    cursor.execute("""
+                    SELECT password FROM "user"
+                    WHERE username = %(username)s
+                    """, {"username": username})
+
+    password = cursor.fetchone()
+    return password["password"]
+
+
+def login(username, password):
+    check_user = check_if_user_exists(username)
+
+    if check_user:
+        hash_pass = get_user_hashed_password(username)
+        if verify_password(password, hash_pass):
+            return True
+    return False
 
 
 @database_common.connection_handler
