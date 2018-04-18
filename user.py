@@ -37,3 +37,12 @@ def login():
 
 
     return render_template("login.html")
+
+
+@user_page.route("/logout", methods=["GET"])
+def logout():
+
+    if "username" in session:
+        session.pop("username")
+
+    return redirect(url_for("list_questions"))
