@@ -62,6 +62,17 @@ def read_answers_by_question_id(cursor, id):
 
 
 @database_common.connection_handler
+def get_answer_ids_by_question_id(cursor, question_id):
+    cursor.execute("""
+            SELECT id FROM answer WHERE question_id = %(question_id)s
+        """, {'question_id': question_id})
+    
+    answer = cursor.fetchall()
+    
+    return answer
+
+
+@database_common.connection_handler
 def write_question(cursor, title, message):
     message = message.replace('\r', '').replace('\n', '<br>')
     cursor.execute(
@@ -280,19 +291,16 @@ def get_user_hashed_password(cursor, username):
                     SELECT password FROM "user"
                     WHERE username = %(username)s
                     """, {"username": username})
-
+    
     password = cursor.fetchone()
     return password["password"]
 
 
-
 def login(username, password):
-
     check_user = check_if_user_exists(username)
-
+    
     if check_user:
         hash_pass = get_user_hashed_password(username)
         if verify_password(password, hash_pass):
             return True
     return False
-
