@@ -12,14 +12,6 @@
 
 </head>
 <body>
-
-{% set navigation_bar = [
-    ('/', 'List all'),
-    ('/add-question', 'Ask'),
-    ('/registration', 'Register'),
-    ('/login', 'Login'),
-    ('/logout', 'Logout')
-    ] -%}
 {% set active_page = active_page -%}
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-3">
@@ -33,12 +25,27 @@
 
     <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('list_questions') }}">List all</a>
+            </li>
 
-            {% for href, caption in navigation_bar %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('question_form') }}">Ask</a>
+            </li>
+            {% if not session.get('username') %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ href|e }}">{{ caption|e }}<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="{{ url_for('user_page.registration') }}">Register</a>
                 </li>
-            {% endfor %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user_page.login') }}">Log in</a>
+                </li>
+            {% endif %}
+            {% if session.get('username') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user_page.logout') }}">Log out</a>
+                </li>
+            {% endif %}
         </ul>
         <form action="{{ '/search' }}" method="GET" class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="text" name="search_term" placeholder="Search questions">
@@ -55,15 +62,15 @@
 
 {% block script %}{% endblock %}
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
 </body>
 </html>
