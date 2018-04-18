@@ -66,7 +66,7 @@ def answer_form(question_id):
             file = request.files['file']
             if file and sql_data_manager.allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                file.save(os.getcwd() + os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                file.save(os.getcwd() + os.path.join(UPLOAD_FOLDER, filename))
         
         message = request.form.get('message')
         image = UPLOAD_FOLDER + filename if file else ''
@@ -119,6 +119,9 @@ def delete_question(question_id):
 
 @app.route('/delete_answer/<answer_id>', methods=['POST'])
 def delete_answer(answer_id):
+    image_path = sql_data_manager.get_image_name_by_answer_id(answer_id)
+    if image_path:
+        os.remove(image_path)
     question_id = sql_data_manager.delete_answer(answer_id)
     return redirect(url_for("display_question", id=question_id))
 

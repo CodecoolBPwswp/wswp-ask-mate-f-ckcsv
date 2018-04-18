@@ -40,6 +40,17 @@ def read_answer_by_id(cursor, id):
 
 
 @database_common.connection_handler
+def get_image_name_by_answer_id(cursor, answer_id):
+    cursor.execute("""
+        SELECT image FROM answer WHERE id = %(id)s
+    """, {'id': answer_id})
+    
+    path = cursor.fetchone()
+    
+    return path
+
+
+@database_common.connection_handler
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
             SELECT * FROM answer WHERE question_id = %(id)s ORDER BY id ASC
@@ -150,9 +161,9 @@ def read_question_id_by_comment_id(cursor, comment_id):
     cursor.execute("""
         SELECT question_id FROM comment WHERE id = %(comment_id)s
     """, {'comment_id': comment_id})
-
+    
     question_id = cursor.fetchall()
-
+    
     return question_id
 
 
@@ -216,7 +227,7 @@ def delete_comment(cursor, id):
     cursor.execute("""
                    DELETE FROM comment
                    WHERE id = %(id)s
-                    """, {'id':id})
+                    """, {'id': id})
 
 
 @database_common.connection_handler
@@ -224,7 +235,7 @@ def edit_comment(cursor, id, message):
     cursor.execute("""
                    UPDATE comment SET message = %(message)s, submission_time = localtimestamp(0)
                    WHERE id = %(id)s
-                    """, {'id':id, 'message':message})
+                    """, {'id': id, 'message': message})
 
 
 def hash_password(plain_text_password):
@@ -241,23 +252,23 @@ def verify_password(plain_text_password, hashed_password):
 @database_common.connection_handler
 def registration(cursor, username, password):
     hash_pass = hash_password(password)
-
+    
     cursor.execute("""
                     INSERT INTO "user" (username, password) VALUES(%(username)s, %(password)s) RETURNING *; 
                     """, {"username": username, "password": hash_pass})
-
+    
     data = cursor.fetchone()
-
+    
     return data
+
 
 @database_common.connection_handler
 def check_if_user_exists(cursor, username):
-
     cursor.execute("""
                     SELECT * FROM "user"
                     WHERE username=%(username)s
                     """, {"username": username})
-
+    
     data = cursor.fetchone()
-
+    
     return data
