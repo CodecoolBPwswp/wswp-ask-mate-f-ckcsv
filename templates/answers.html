@@ -80,8 +80,8 @@
             </div>
             <!--hr-->
             <div class="card-footer">
-                <h4 class="pointer" onclick="toggleComments('{{ item.id }}-comments')">Comments</h4>
-                <div class="comment" id="{{ item.id }}-comments">
+                <h4 class="pointer mb-0" onclick="toggleComments('{{ item.id }}-comments')">Comments</h4>
+                <div class="comment mt-3" id="{{ item.id }}-comments">
                     {% for comment in answer_comments %}
                         {% if item.id == comment.answer_id %}
                             <div class="card text-white bg-dark mb-3 col-6 card-body flex-nowrap flex-row">
