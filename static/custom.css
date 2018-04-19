@@ -45,3 +45,7 @@ mark {
     text-decoration: underline;
     color: white;
 }
+
+.nodecor:hover {
+    text-decoration: none;
+}
