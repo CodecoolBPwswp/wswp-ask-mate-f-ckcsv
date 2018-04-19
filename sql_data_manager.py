@@ -361,3 +361,13 @@ def user_comments(cursor, user_id):
     user_comments = cursor.fetchall()
 
     return user_comments
+
+
+@database_common.connection_handler
+def count_view(cursor, id):
+    cursor.execute("""
+                   UPDATE question 
+                   SET view_number = view_number+1
+                   WHERE id=%(id)s
+                    """, {'id':id})
+

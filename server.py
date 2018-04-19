@@ -43,6 +43,8 @@ def display_question(id):
         sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"])
         return redirect(url_for("display_question", id=id) + "#" + request.form["answer_id"])
 
+    sql_data_manager.count_view(id)
+
     return render_template("answers.html", answer=answer, question=question, answer_comments=answer_comments)
 
 
