@@ -20,7 +20,7 @@ def read_questions(cursor, order, ascdesc):
 @database_common.connection_handler
 def read_question_by_id(cursor, id):
     cursor.execute("""
-         SELECT submisson_time, title, message, username FROM "question"
+         SELECT "question".id, submisson_time, title, message, username FROM "question"
          INNER JOIN "user" ON "question".user_id = "user".id
          WHERE "question".id = %(id)s
     """, {'id': id})
