@@ -16,7 +16,7 @@
         </div>
     </div>
     <a href="{{ url_for('answer_form', question_id=question.id) }}">
-        <button class="btn btn-primary text-white"><i class="fas fa-plus"></i></button>
+        <button class="btn btn-primary text-white"><i class="fas fa-plus"></i> New answer</button>
     </a>
     <a href="{{ url_for('edit_question', question_id=question.id) }}">
         <button class="btn btn-secondary text-white"><i class="fas fa-edit"></i></button>
@@ -85,7 +85,7 @@
                         </div>
                         <input type="hidden" name="answer_id" value="{{ item.id }}">
                         <div class="form-group">
-                            <button type="submit" class="btn btn-secondary">Add</button>
+                            <button type="submit" class="btn btn-secondary"><i class="fas fa-plus"></i></button>
                         </div>
                     </form>
                 </div>
@@ -95,7 +95,7 @@
     {% endfor %}
 
     <a href="{{ url_for('answer_form', question_id=question.id) }}" class="floor">
-        <button class="btn btn-primary text-white mt-3 mb-3">Add Answer</button>
+        <button class="btn btn-primary text-white mt-3 mb-3"><i class="fas fa-plus"></i> New answer</button>
     </a>
 
 {% endblock %}
