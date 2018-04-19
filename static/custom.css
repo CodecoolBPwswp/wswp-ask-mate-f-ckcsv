@@ -34,3 +34,13 @@ mark {
     background: #0d292d;
     width: 50%;
 }
+
+.clean-link {
+    color: white;
+    text-decoration: none;
+}
+
+.clean-link:hover {
+    text-decoration: underline;
+    color: white;
+}

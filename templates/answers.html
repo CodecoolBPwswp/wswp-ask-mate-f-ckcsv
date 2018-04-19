@@ -11,8 +11,10 @@
         </div>
 
         <div class="card-footer ">
-            <span class="float-left">{{ question.username }}</span> <span
-                class="float-right">{{ question.submisson_time }}</span>
+            <a href="{{ url_for('user_page', user_id=question.user_id) }}"
+               class="btn btn-primary float-left">{{ question .username }}&nbsp; &nbsp;
+                <i class="fas fa-tachometer-alt"></i>&nbsp; {{ question.reputation }}</a>
+            <span class="float-right">{{ question.submisson_time }}</span>
         </div>
     </div>
     <a href="{{ url_for('answer_form', question_id=question.id) }}">
@@ -33,12 +35,10 @@
     {% for item in answer %}
         <div class="card mt-3 text-white" id="v_{{ item.id }}">
             <div class="card-header">
-                <span class="float-left">{{ item.username }} &nbsp; &nbsp; &nbsp;<i class="fas
-                fa-tachometer-alt"></i>
-                    {{ item
-                .reputation }}</span>
-                <span
-                        class="float-right">{{ item.submisson_time }}</span>
+                <a href="{{ url_for('user_page', user_id=item.user_id) }}" class="btn btn-secondary
+                float-left">{{ item.username }} &nbsp;
+                    &nbsp;<i class="fas fa-tachometer-alt"></i>&nbsp; {{ item.reputation }}</a>
+                <span class="float-right">{{ item.submisson_time }}</span>
             </div>
             <div class="card-body">
                 {{ item.message|safe }}
@@ -48,13 +48,16 @@
                 <form method="post" action="{{ url_for('display_question', id=question.id) }}/vote-up" id="answer_form">
                     <span class="btn btn-primary">{{ item["vote_number"] }}</span>
                     <input type="hidden" name="answer_id" value="{{ item.id }}">
-                    <button type="submit" class="btn btn-secondary"
-                            formaction="{{ url_for('vote', question_id=question.id, type="vote-up") }}"><i
-                            class="fas fa-arrow-up"></i></button>
-                    <button type="submit" class="btn btn-secondary"
-                            formaction="{{ url_for('vote', question_id=question.id, type="vote-down") }}"><i
-                            class="fas fa-arrow-down"></i></button>
-                    <button type="submit" class="btn btn-secondary"
+                    <button type="submit"
+                            class="btn btn-secondary"
+                            formaction="{{ url_for('vote', question_id=question.id, type="vote-up") }}">
+                        <i class="fas fa-arrow-up"></i></button>
+                    <button type="submit"
+                            class="btn btn-secondary"
+                            formaction="{{ url_for('vote', question_id=question.id, type="vote-down") }}">
+                        <i class="fas fa-arrow-down"></i></button>
+                    <button type="submit"
+                            class="btn btn-secondary"
                             formaction="{{ url_for('delete_answer', answer_id=item.id) }}"><i class="fas fa-trash"></i>
                     </button>
                 </form>
@@ -87,8 +90,14 @@
                 <div class="new_comment">
                     <form action="" method="post" class="mt-3">
                         <div class="form-group">
-                            <textarea name="message" id="" cols="2" rows="2" class="form-control col-lg-6"
-                                      placeholder="Add comment" maxlength="140" required></textarea>
+                            <textarea name="message"
+                                      id=""
+                                      cols="2"
+                                      rows="2"
+                                      class="form-control col-lg-6"
+                                      placeholder="Add comment"
+                                      maxlength="140"
+                                      required></textarea>
                         </div>
                         <input type="hidden" name="answer_id" value="{{ item.id }}">
                         <div class="form-group">
