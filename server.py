@@ -240,5 +240,12 @@ def user_page(user_id):
                            user_reputation=user_reputation)
 
 
+@app.route('/accept/<question_id>/<answer_id>')
+def accept_answer(question_id, answer_id):
+    sql_data_manager.accept_answer(answer_id)
+    
+    return redirect(url_for('display_question', id=question_id))
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

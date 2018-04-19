@@ -20,7 +20,7 @@ def read_questions(cursor, order, ascdesc):
 @database_common.connection_handler
 def read_question_by_id(cursor, id):
     cursor.execute("""
-         SELECT "question".id, submisson_time, title, message, username, reputation, "user".id as user_id FROM
+         SELECT "question".id, submisson_time, title, message, username, reputation, "user".id AS user_id FROM
          "question"
          INNER JOIN "user" ON "question".user_id = "user".id
          WHERE "question".id = %(id)s
@@ -57,7 +57,7 @@ def get_image_name_by_answer_id(cursor, answer_id):
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
             SELECT "answer".id, submisson_time, vote_number, image, message, username, "user".reputation,
-            "user".id as user_id FROM "answer"
+            "user".id AS user_id, accepted FROM "answer"
             INNER JOIN "user" ON "answer".user_id = "user".id 
             WHERE question_id = %(id)s ORDER BY "answer".id ASC
         """, {'id': id})
@@ -392,3 +392,12 @@ def user_reputation(cursor, user_id):
     reputation = cursor.fetchone()
     reputation = reputation['reputation']
     return reputation
+
+
+@database_common.connection_handler
+def accept_answer(cursor, answer_id):
+    cursor.execute(
+            """
+            UPDATE answer SET accepted = TRUE WHERE id = %(answer_id)s
+            """, {'answer_id': answer_id}
+    )
