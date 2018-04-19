@@ -33,8 +33,12 @@
     {% for item in answer %}
         <div class="card mt-3 text-white" id="v_{{ item.id }}">
             <div class="card-header">
-                <span class="float-left">{{ item.username }}</span> <span
-                    class="float-right">{{ item.submisson_time }}</span>
+                <span class="float-left">{{ item.username }} &nbsp; &nbsp; &nbsp;<i class="fas
+                fa-tachometer-alt"></i>
+                    {{ item
+                .reputation }}</span>
+                <span
+                        class="float-right">{{ item.submisson_time }}</span>
             </div>
             <div class="card-body">
                 {{ item.message|safe }}
@@ -67,13 +71,15 @@
                     <h4>Comments</h4>
                     {% for comment in answer_comments %}
                         {% if item.id == comment.answer_id %}
-                            <div class="comment">
+                            <div class="card text-white bg-dark mb-3 col-6 card-body flex-nowrap flex-row">
                                 {{ comment.message }}
                                 {{ comment_to_edit }}
-                                <a href="{{ url_for('delete_comment', comment_id=comment.id) }}">
-                                    <button class="btn btn-primary text-white"><i class="fas fa-trash"></i></button>
+                                <a class="btn btn-primary text-white ml-auto"
+                                   href="{{ url_for('delete_comment', comment_id=comment.id) }}">
+                                    <i class="fas fa-trash"></i>
                                 </a>
                             </div>
+
                         {% endif %}
                     {% endfor %}
                 </div>

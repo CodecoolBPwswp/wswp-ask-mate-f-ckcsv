@@ -42,7 +42,7 @@ def display_question(id):
     if request.method == "POST":
         sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"], session["user_id"])
         return redirect(url_for("display_question", id=id) + "#" + request.form["answer_id"])
-
+    
     return render_template("answers.html", answer=answer, question=question, answer_comments=answer_comments)
 
 
@@ -147,19 +147,19 @@ def search():
     
     if not search_term:
         return redirect(url_for('list_questions'))
-
+    
     questions = sql_data_manager.search_questions(search_term)
     answers = sql_data_manager.search_answers(search_term)
-
+    
     for question in questions:
         question['title'] = highlight(question['title'], search_term)
         question['message'] = highlight(question['message'], search_term)
     
     for answer in answers:
         answer['message'] = highlight(answer['message'], search_term)
-
+    
     print(answers)
-
+    
     return render_template('search.html', questions=questions, answers=answers)
 
 
@@ -167,19 +167,19 @@ def search():
 @app.route('/answer/<answer_id>/edit', methods=['POST'])
 def edit_answer(answer_id):
     answer = sql_data_manager.read_answer_by_id(answer_id)[0]
-
+    
     if request.method == 'POST':
         try:
             answer['message'] = request.form.get('message', '')
-
+            
             sql_data_manager.update_answer(answer_id, answer['message'])
-
+            
             question_id = sql_data_manager.read_question_id_by_answer_id(answer_id)[0]['question_id']
-
+            
             return redirect('/question/{}'.format(question_id))
         except Exception as e:
             print(e)
-
+    
     return render_template('new-answer.html', edit_data={
         'message': answer['message']
     })
@@ -187,49 +187,48 @@ def edit_answer(answer_id):
 
 @app.route('/comment/<comment_id>/delete')
 def delete_comment(comment_id):
-
     question_id = sql_data_manager.read_question_id_by_comment_id(comment_id)[0]['question_id']
-
+    
     sql_data_manager.delete_comment(comment_id)
-
+    
     return redirect('/question/{}'.format(question_id))
 
 
 @app.route('/comment/<comment_id>/edit')
 @app.route('/comment/<comment_id>/edit', methods=['POST'])
 def edit_comment(comment_id):
-
     comment_to_edit = int(comment_id)
     question_id = sql_data_manager.read_question_id_by_comment_id(comment_id)[0]['question_id']
-
+    
     if request.method == 'POST':
         sql_data_manager.edit_comment(18, request.form["message"])
         return redirect(url_for("display_question", id=question_id))
-
+    
     return redirect(url_for("display_question", id=question_id, comment_to_edit=comment_to_edit))
 
 
 @app.route('/list-users')
 def list_users():
-
     user_list = sql_data_manager.list_users()
-
+    
     return render_template('list_users.html', user_list=user_list)
 
 
 @app.route('/user/<user_id>')
 def user_page(user_id):
-
     username = sql_data_manager.list_users(user_id)[0]['username']
-
+    
     user_questions = sql_data_manager.user_questions(user_id)
-
+    
     user_answers = sql_data_manager.user_answers(user_id)
-
+    
     user_comments = sql_data_manager.user_comments(user_id)
-
+    
+    user_reputation = sql_data_manager.user_reputation(user_id)
+    
     return render_template('user_page.html', user_questions=user_questions,
-                           user_answers=user_answers, user_comments=user_comments, username=username)
+                           user_answers=user_answers, user_comments=user_comments, username=username,
+                           user_reputation=user_reputation)
 
 
 if __name__ == '__main__':
