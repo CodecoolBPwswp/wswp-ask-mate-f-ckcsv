@@ -55,7 +55,7 @@ def get_image_name_by_answer_id(cursor, answer_id):
 @database_common.connection_handler
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
-            SELECT "answer".id, submisson_time, vote_number, image, message, username FROM "answer" 
+            SELECT "answer".id, submisson_time, vote_number, image, message, username, "user".reputation FROM "answer"
             INNER JOIN "user" ON "answer".user_id = "user".id 
             WHERE question_id = %(id)s ORDER BY "answer".id ASC
         """, {'id': id})
@@ -81,7 +81,8 @@ def write_question(cursor, title, message, user_id):
     message = message.replace('\r', '').replace('\n', '<br>')
     cursor.execute(
             """
-            INSERT INTO question (submisson_time, title, message, user_id) VALUES (localtimestamp(0),%(title)s,%(message)s, %(user_id)s)
+            INSERT INTO question (submisson_time, title, message, user_id) VALUES (localtimestamp(0),%(title)s,
+            %(message)s, %(user_id)s)
             """, {'title': title, 'message': message, 'user_id': user_id}
     )
 
@@ -91,7 +92,8 @@ def write_answer(cursor, question_id, message, image, user_id):
     message = message.replace('\r', '').replace('\n', '<br>')
     cursor.execute(
             """
-            INSERT INTO answer (submisson_time,question_id, message, image, user_id) VALUES (localtimestamp(0),%(question_id)s,
+            INSERT INTO answer (submisson_time,question_id, message, image, user_id) VALUES (localtimestamp(0),
+            %(question_id)s,
             %(message)s,%(image)s, %(user_id)s)
             """, {'question_id': question_id, 'message': message, 'image': image, "user_id": user_id}
     )
@@ -124,9 +126,24 @@ def update_vote(cursor, answer_id, type):
     step = 1 if type == 'vote-up' else -1
     cursor.execute(
             """
-            UPDATE answer SET vote_number = vote_number + ({})
-            WHERE id = {}
-            """.format(step, answer_id)
+            UPDATE answer SET vote_number = vote_number + (%(step)s)
+            WHERE id = %(answer_id)s;
+            SELECT user_id FROM answer WHERE id = %(answer_id)s;
+            """, {'step': step, 'answer_id': answer_id}
+    )
+    user_id = cursor.fetchone()
+    user_id = user_id['user_id']
+    reputation(user_id, type)
+
+
+@database_common.connection_handler
+def reputation(cursor, user_id, type):
+    step = 10 if type == 'vote-up' else -10
+    cursor.execute(
+            """
+            UPDATE "user" SET reputation = reputation + %(step)s
+            WHERE id = %(user_id)s
+            """, {'step': step, 'user_id': user_id}
     )
 
 
@@ -332,7 +349,7 @@ def user_questions(cursor, user_id):
     cursor.execute("""
                    SELECT id, title, view_number, vote_number, submisson_time FROM question
                    WHERE user_id=%(user_id)s
-                    """, {'user_id':user_id})
+                    """, {'user_id': user_id})
 
     user_questions = cursor.fetchall()
 
@@ -344,7 +361,7 @@ def user_answers(cursor, user_id):
     cursor.execute("""
                    SELECT id, message, vote_number, submisson_time, question_id FROM answer
                    WHERE user_id=%(user_id)s
-                    """, {'user_id':user_id})
+                    """, {'user_id': user_id})
 
     user_answers = cursor.fetchall()
 
@@ -356,7 +373,7 @@ def user_comments(cursor, user_id):
     cursor.execute("""
                    SELECT id, message, question_id FROM comment
                    WHERE user_id=%(user_id)s
-                    """, {'user_id':user_id})
+                    """, {'user_id': user_id})
 
     user_comments = cursor.fetchall()
 
@@ -381,3 +398,15 @@ def new_tag(cursor, new_tag, id):
                    VALUES (%(id)s, tag.id)
                     """, {'id':id, 'new_tag':new_tag})
 
+
+
+@database_common.connection_handler
+def user_reputation(cursor, user_id):
+    cursor.execute(
+            """
+            SELECT reputation FROM "user" WHERE id = %(user_id)s
+            """, {'user_id': user_id}
+    )
+    reputation = cursor.fetchone()
+    reputation = reputation['reputation']
+    return reputation

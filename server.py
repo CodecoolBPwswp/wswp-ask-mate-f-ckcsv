@@ -189,7 +189,6 @@ def edit_answer(answer_id):
 
 @app.route('/comment/<comment_id>/delete')
 def delete_comment(comment_id):
-
     question_id = sql_data_manager.read_question_id_by_comment_id(comment_id)[0]['question_id']
 
     sql_data_manager.delete_comment(comment_id)
@@ -200,7 +199,6 @@ def delete_comment(comment_id):
 @app.route('/comment/<comment_id>/edit')
 @app.route('/comment/<comment_id>/edit', methods=['POST'])
 def edit_comment(comment_id):
-
     comment_to_edit = int(comment_id)
     question_id = sql_data_manager.read_question_id_by_comment_id(comment_id)[0]['question_id']
 
@@ -213,7 +211,6 @@ def edit_comment(comment_id):
 
 @app.route('/list-users')
 def list_users():
-
     user_list = sql_data_manager.list_users()
 
     return render_template('list_users.html', user_list=user_list)
@@ -221,7 +218,6 @@ def list_users():
 
 @app.route('/user/<user_id>')
 def user_page(user_id):
-
     username = sql_data_manager.list_users(user_id)[0]['username']
 
     user_questions = sql_data_manager.user_questions(user_id)
@@ -230,8 +226,11 @@ def user_page(user_id):
 
     user_comments = sql_data_manager.user_comments(user_id)
 
+    user_reputation = sql_data_manager.user_reputation(user_id)
+
     return render_template('user_page.html', user_questions=user_questions,
-                           user_answers=user_answers, user_comments=user_comments, username=username)
+                           user_answers=user_answers, user_comments=user_comments, username=username,
+                           user_reputation=user_reputation)
 
 
 @app.route('/<int:question_id>/new-tag')
