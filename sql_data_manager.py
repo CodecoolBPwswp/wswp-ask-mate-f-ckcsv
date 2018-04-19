@@ -306,7 +306,7 @@ def login(username, password):
     if check_user:
         hash_pass = get_user_hashed_password(username)
         if verify_password(password, hash_pass):
-            return True
+            return check_user
     return False
 
 
