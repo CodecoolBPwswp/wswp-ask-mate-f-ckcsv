@@ -44,7 +44,7 @@
             </div>
             <div class="card-body">
                 {{ item.message|safe }}
-                <img src="{{ item.image }}" class="rounded img-fluid d-block answer_img" alt="">
+                <img src="{{ item.image }}" class="rounded img-fluid d-block answer_img mt-3" alt="">
             </div>
             <div class="card-footer">
                 {% if session.get('username') == question.username %}
