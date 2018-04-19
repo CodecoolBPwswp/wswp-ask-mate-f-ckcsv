@@ -97,5 +97,8 @@
     <a href="{{ url_for('answer_form', question_id=question.id) }}" class="floor">
         <button class="btn btn-primary text-white mt-3 mb-3"><i class="fas fa-plus"></i> New answer</button>
     </a>
+    <a href="{{ url_for('new_tag', question_id=question.id) }}" class="floor">
+        <button class="btn btn-primary text-white mt-3 mb-3"><i class="fas fa-plus"></i> Add tags</button>
+    </a>
 
 {% endblock %}
