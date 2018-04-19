@@ -11,12 +11,19 @@
         </div>
 
         <div class="card-footer ">
-            <span class="float-left">{{ question.username }}</span> <span
+            {% for tag in tags %}
+                <span class="badge badge-pill badge-secondary">{{ tag.name }}
+                    <a href="{{ url_for('delete_tag', tag_id=tag.id) }}"><span class="badge badge-primary badge-pill">X</span></a></span>
+            {% endfor %}
+            <br><span class="float-left">{{ question.username }}</span> <span
                 class="float-right">{{ question.submisson_time }}</span>
         </div>
     </div>
     <a href="{{ url_for('answer_form', question_id=question.id) }}">
         <button class="btn btn-primary text-white"><i class="fas fa-plus"></i> New answer</button>
+    </a>
+    <a href="{{ url_for('new_tag', question_id=question.id) }}" class="floor">
+        <button class="btn btn-primary text-white mt-3 mb-3"><i class="fas fa-plus"></i> Add tags</button>
     </a>
     <a href="{{ url_for('edit_question', question_id=question.id) }}">
         <button class="btn btn-secondary text-white"><i class="fas fa-edit"></i></button>

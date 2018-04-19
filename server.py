@@ -35,6 +35,7 @@ def display_question(id):
     answer = sql_data_manager.read_answers_by_question_id(id)
     question = sql_data_manager.read_question_by_id(id)[0]
     answer_comments = sql_data_manager.answer_comments(id)
+    tags = sql_data_manager.read_tags(id)
     
     if not question:
         abort(404)
@@ -45,7 +46,7 @@ def display_question(id):
 
     sql_data_manager.count_view(id)
 
-    return render_template("answers.html", answer=answer, question=question, answer_comments=answer_comments)
+    return render_template("answers.html", answer=answer, question=question, answer_comments=answer_comments, tags=tags)
 
 
 @app.route('/add-question')
@@ -235,12 +236,21 @@ def user_page(user_id):
 
 @app.route('/<int:question_id>/new-tag')
 @app.route('/<int:question_id>/new-tag', methods=['POST'])
-def new_tag():
+def new_tag(question_id):
 
     if request.method == 'POST':
-        sql_data_manager.new_tag(request.form.get("tag"), )
+        sql_data_manager.new_tag(request.form.get("tag"), question_id)
 
-    return render_template('new_tag.html')
+    return render_template('new_tag.html', h1="Add tag")
+
+
+@app.route('/<int:tag_id>/delete-tag')
+def delete_tag(tag_id):
+
+    question_id = sql_data_manager.get_question_id_by_tag_id(tag_id)[0]
+    sql_data_manager.delete_tag(tag_id)
+
+    return redirect(url_for("display_question", id=question_id['question_id']))
 
 
 
