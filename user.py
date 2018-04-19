@@ -16,6 +16,7 @@ def registration():
             
             if data:
                 session["username"] = data["username"]
+                session["user_id"] = data["id"]
                 flash("Successfull registration!", "success")
                 return redirect(url_for("list_questions"))
     
@@ -25,8 +26,10 @@ def registration():
 @user_page.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        if sql_data_manager.login(request.form["username"], request.form["password"]):
-            session["username"] = request.form["username"]
+        data = sql_data_manager.login(request.form["username"], request.form["password"])
+        if data:
+            session["username"] = data["username"]
+            session["user_id"] = data["id"]
             flash("Successfull login!", "success")
             return redirect(url_for("list_questions"))
         else:

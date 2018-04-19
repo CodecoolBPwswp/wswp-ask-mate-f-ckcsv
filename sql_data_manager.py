@@ -20,7 +20,7 @@ def read_questions(cursor, order, ascdesc):
 @database_common.connection_handler
 def read_question_by_id(cursor, id):
     cursor.execute("""
-         SELECT submisson_time, title, message, username FROM "question"
+         SELECT "question".id, submisson_time, title, message, username FROM "question"
          INNER JOIN "user" ON "question".user_id = "user".id
          WHERE "question".id = %(id)s
     """, {'id': id})
@@ -55,7 +55,7 @@ def get_image_name_by_answer_id(cursor, answer_id):
 @database_common.connection_handler
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
-            SELECT submisson_time, vote_number, image, message, username FROM "answer" 
+            SELECT "answer".id, submisson_time, vote_number, image, message, username FROM "answer" 
             INNER JOIN "user" ON "answer".user_id = "user".id 
             WHERE question_id = %(id)s ORDER BY "answer".id ASC
         """, {'id': id})
@@ -77,23 +77,23 @@ def get_answer_ids_by_question_id(cursor, question_id):
 
 
 @database_common.connection_handler
-def write_question(cursor, title, message):
+def write_question(cursor, title, message, user_id):
     message = message.replace('\r', '').replace('\n', '<br>')
     cursor.execute(
             """
-            INSERT INTO question (submisson_time, title, message) VALUES (localtimestamp(0),%(title)s,%(message)s)
-            """, {'title': title, 'message': message}
+            INSERT INTO question (submisson_time, title, message, user_id) VALUES (localtimestamp(0),%(title)s,%(message)s, %(user_id)s)
+            """, {'title': title, 'message': message, 'user_id': user_id}
     )
 
 
 @database_common.connection_handler
-def write_answer(cursor, question_id, message, image):
+def write_answer(cursor, question_id, message, image, user_id):
     message = message.replace('\r', '').replace('\n', '<br>')
     cursor.execute(
             """
-            INSERT INTO answer (submisson_time,question_id, message, image) VALUES (localtimestamp(0),%(question_id)s,
-            %(message)s,%(image)s)
-            """, {'question_id': question_id, 'message': message, 'image': image}
+            INSERT INTO answer (submisson_time,question_id, message, image, user_id) VALUES (localtimestamp(0),%(question_id)s,
+            %(message)s,%(image)s, %(user_id)s)
+            """, {'question_id': question_id, 'message': message, 'image': image, "user_id": user_id}
     )
 
 
@@ -215,8 +215,8 @@ def search_answers(cursor, search_term):
 @database_common.connection_handler
 def answer_comments(cursor, question_id):
     cursor.execute("""
-                    SELECT id, answer_id, message FROM comment
-                    WHERE question_id = %(question_id)s   
+                    SELECT "comment".id, answer_id, message, username FROM "comment"
+                    INNER JOIN "user" ON comment.user_id = "user".id  WHERE question_id = %(question_id)s   
                 """, {'question_id': question_id})
     
     comments = cursor.fetchall()
@@ -225,11 +225,11 @@ def answer_comments(cursor, question_id):
 
 
 @database_common.connection_handler
-def add_comment(cursor, question_id, answer_id, message):
+def add_comment(cursor, question_id, answer_id, message, user_id):
     cursor.execute("""
-                    INSERT INTO comment (question_id, answer_id, message,  submission_time)
-                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, localtimestamp(0))
-                    """, {"question_id": question_id, "answer_id": answer_id, "message": message})
+                    INSERT INTO comment (question_id, answer_id, message,  submission_time, user_id)
+                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, localtimestamp(0), %(user_id)s)
+                    """, {"question_id": question_id, "answer_id": answer_id, "message": message, "user_id": user_id})
 
 
 def allowed_file(filename):
