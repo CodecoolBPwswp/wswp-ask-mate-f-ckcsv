@@ -77,12 +77,12 @@ def get_answer_ids_by_question_id(cursor, question_id):
 
 
 @database_common.connection_handler
-def write_question(cursor, title, message):
+def write_question(cursor, title, message, user_id):
     message = message.replace('\r', '').replace('\n', '<br>')
     cursor.execute(
             """
-            INSERT INTO question (submisson_time, title, message) VALUES (localtimestamp(0),%(title)s,%(message)s)
-            """, {'title': title, 'message': message}
+            INSERT INTO question (submisson_time, title, message, user_id) VALUES (localtimestamp(0),%(title)s,%(message)s, %(user_id)s)
+            """, {'title': title, 'message': message, 'user_id': user_id}
     )
 
 
@@ -215,8 +215,8 @@ def search_answers(cursor, search_term):
 @database_common.connection_handler
 def answer_comments(cursor, question_id):
     cursor.execute("""
-                    SELECT id, answer_id, message FROM comment
-                    WHERE question_id = %(question_id)s   
+                    SELECT "comment".id, answer_id, message, username FROM "comment"
+                    INNER JOIN "user" ON comment.user_id = "user".id  WHERE question_id = %(question_id)s   
                 """, {'question_id': question_id})
     
     comments = cursor.fetchall()

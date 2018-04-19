@@ -50,7 +50,7 @@ def display_question(id):
 @app.route('/add-question', methods=['POST'])
 def question_form():
     if request.method == 'POST':
-        sql_data_manager.write_question(request.form.get('title'), request.form.get('message'))
+        sql_data_manager.write_question(request.form.get('title'), request.form.get('message'), session["user_id"])
         return redirect(url_for('list_questions'))
     
     return render_template('add-question.html', h1='Create question')
