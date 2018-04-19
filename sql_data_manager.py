@@ -55,7 +55,7 @@ def get_image_name_by_answer_id(cursor, answer_id):
 @database_common.connection_handler
 def read_answers_by_question_id(cursor, id):
     cursor.execute("""
-            SELECT submisson_time, vote_number, image, message, username FROM "answer" 
+            SELECT "answer".id, submisson_time, vote_number, image, message, username FROM "answer" 
             INNER JOIN "user" ON "answer".user_id = "user".id 
             WHERE question_id = %(id)s ORDER BY "answer".id ASC
         """, {'id': id})
@@ -87,13 +87,13 @@ def write_question(cursor, title, message, user_id):
 
 
 @database_common.connection_handler
-def write_answer(cursor, question_id, message, image):
+def write_answer(cursor, question_id, message, image, user_id):
     message = message.replace('\r', '').replace('\n', '<br>')
     cursor.execute(
             """
-            INSERT INTO answer (submisson_time,question_id, message, image) VALUES (localtimestamp(0),%(question_id)s,
-            %(message)s,%(image)s)
-            """, {'question_id': question_id, 'message': message, 'image': image}
+            INSERT INTO answer (submisson_time,question_id, message, image, user_id) VALUES (localtimestamp(0),%(question_id)s,
+            %(message)s,%(image)s, %(user_id)s)
+            """, {'question_id': question_id, 'message': message, 'image': image, "user_id": user_id}
     )
 
 
@@ -225,11 +225,11 @@ def answer_comments(cursor, question_id):
 
 
 @database_common.connection_handler
-def add_comment(cursor, question_id, answer_id, message):
+def add_comment(cursor, question_id, answer_id, message, user_id):
     cursor.execute("""
-                    INSERT INTO comment (question_id, answer_id, message,  submission_time)
-                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, localtimestamp(0))
-                    """, {"question_id": question_id, "answer_id": answer_id, "message": message})
+                    INSERT INTO comment (question_id, answer_id, message,  submission_time, user_id)
+                    VALUES (%(question_id)s, %(answer_id)s, %(message)s, localtimestamp(0), %(user_id)s)
+                    """, {"question_id": question_id, "answer_id": answer_id, "message": message, "user_id": user_id})
 
 
 def allowed_file(filename):

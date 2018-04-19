@@ -40,7 +40,7 @@ def display_question(id):
         abort(404)
     
     if request.method == "POST":
-        sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"])
+        sql_data_manager.add_comment(id, request.form["answer_id"], request.form["message"], session["user_id"])
         return redirect(url_for("display_question", id=id) + "#" + request.form["answer_id"])
 
     return render_template("answers.html", answer=answer, question=question, answer_comments=answer_comments)
@@ -71,7 +71,7 @@ def answer_form(question_id):
         message = request.form.get('message')
         image = UPLOAD_FOLDER + filename if file else ''
         
-        sql_data_manager.write_answer(question_id, message, image)
+        sql_data_manager.write_answer(question_id, message, image, session["user_id"])
         return redirect('/question/{}'.format(question_id))
     
     return render_template('new-answer.html', h1='Create answer')
