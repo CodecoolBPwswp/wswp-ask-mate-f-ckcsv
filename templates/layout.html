@@ -33,7 +33,7 @@
             </li>
 
         </ul>
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ml-auto mr-md-2">
             {% if not session.get('username') %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('user_page.registration') }}">Register</a>
