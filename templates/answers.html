@@ -80,9 +80,8 @@
             </div>
             <!--hr-->
             <div class="card-footer">
-
-                <div class="comments" id="{{ item.id }}">
-                    <h4>Comments</h4>
+                <h4 class="pointer" onclick="toggleComments('{{ item.id }}-comments')">Comments</h4>
+                <div class="comment" id="{{ item.id }}-comments">
                     {% for comment in answer_comments %}
                         {% if item.id == comment.answer_id %}
                             <div class="card text-white bg-dark mb-3 col-6 card-body flex-nowrap flex-row">
@@ -98,11 +97,11 @@
 
                         {% endif %}
                     {% endfor %}
-                </div>
-                {% if 'username' in session %}
-                    <div class="new_comment">
-                        <form action="" method="post" class="mt-3">
-                            <div class="form-group">
+
+                    {% if 'username' in session %}
+                        <div class="new_comment">
+                            <form action="" method="post" class="mt-3">
+                                <div class="form-group">
                             <textarea name="message"
                                       id=""
                                       cols="2"
@@ -111,14 +110,15 @@
                                       placeholder="Add comment"
                                       maxlength="140"
                                       required></textarea>
-                            </div>
-                            <input type="hidden" name="answer_id" value="{{ item.id }}">
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-secondary"><i class="fas fa-plus"></i></button>
-                            </div>
-                        </form>
-                    </div>
-                {% endif %}
+                                </div>
+                                <input type="hidden" name="answer_id" value="{{ item.id }}">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-secondary"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
 

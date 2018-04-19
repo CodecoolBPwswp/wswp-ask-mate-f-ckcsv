@@ -28,11 +28,12 @@ mark {
 }
 
 .comment {
-    padding: 8px;
-    margin: 5px 5px 5px 0;
-    border-radius: 15px;
-    background: #0d292d;
-    width: 50%;
+    display: none;
+}
+
+.pointer:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .clean-link {
