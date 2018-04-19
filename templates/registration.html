@@ -16,7 +16,7 @@
       {% endif %}
     {% endwith %}
 
-   <form method="post">
+   <form method="post" autocomplete="off">
   <fieldset class="col-md-3">
 
     <div class=" form-group">
@@ -27,7 +27,7 @@
       <label for="password">Password</label>
       <input type="password" class="form-control" name="password" id="password" placeholder="Password">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary" id="user_input" value="" disabled>Submit</button>
   </fieldset>
 </form>
 {% endblock %}
