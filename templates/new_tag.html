@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ h1 }}{% endblock %}
+
+{% block content %}
+    <div class="row pl-4">
+        <div class="col">
+            <h1>{{ h1 }}</h1>
+        </div>
+    </div>
+    <form method="POST" class="pl-4 pr-4">
+        <fieldset>
+            <div class="form-group p-0 col col-lg-3">
+                <label class="col-form-label" for="tag">New Tag:</label>
+                <input name="tag" type="text" class="form-control" id="tag"
+                       placeholder="Add new tag" required minlength="3" pattern=".{5,}">
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-2">Add</button>
+        </fieldset>
+    </form>
+{% endblock %}

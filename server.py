@@ -234,5 +234,16 @@ def user_page(user_id):
                            user_answers=user_answers, user_comments=user_comments, username=username)
 
 
+@app.route('/new-tag')
+@app.route('/new-tag', methods=['POST'])
+def new_tag():
+
+    if request.method == 'POST':
+        sql_data_manager.new_tag(request.form.get("tag"), )
+
+    return render_template('new_tag.html')
+
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

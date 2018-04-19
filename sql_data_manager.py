@@ -371,3 +371,13 @@ def count_view(cursor, id):
                    WHERE id=%(id)s
                     """, {'id':id})
 
+
+@database_common.connection_handler
+def new_tag(cursor, new_tag, id):
+    cursor.execute("""
+                   INSERT INTO tag (name)
+                   VALUES (%(new_tag)s);
+                   INSERT INTO question_tag (question_id, tag_id) 
+                   VALUES (%(id)s, tag.id)
+                    """, {'id':id, 'new_tag':new_tag})
+
