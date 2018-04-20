@@ -31,6 +31,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('question_form') }}">Ask</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('list_users') }}">List users</a>
+            </li>
 
         </ul>
         <ul class="navbar-nav ml-auto mr-md-2">
@@ -46,8 +49,7 @@
             {% if session.get('username') %}
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="{{ url_for('user_page', user_id=session.get('user_id')) }}">{{ session.get('username')
-                            }}</a>
+                       href="{{ url_for('user_page', user_id=session.get('user_id')) }}">{{ session.get('username') }}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('user_page.logout') }}">Log out</a>
