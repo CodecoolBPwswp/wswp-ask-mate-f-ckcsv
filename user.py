@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, Blueprint, session, flash
 import sql_data_manager
+from functools import wraps
 
 user_page = Blueprint('user_page', __name__, template_folder='templates')
 
@@ -45,3 +46,16 @@ def logout():
         session.clear()
     
     return redirect(url_for("list_questions"))
+
+def is_logged(func):
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+
+        if 'username' not in session:
+            flash("Please login first!", "error")
+            return redirect(url_for('user_page.login'))
+
+        return func(*args, **kwargs)
+
+    return wrapper

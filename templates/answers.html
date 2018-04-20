@@ -15,92 +15,118 @@
                 <span class="badge badge-pill badge-secondary">{{ tag.name }}
                     <a href="{{ url_for('delete_tag', tag_id=tag.id) }}"><span class="badge badge-primary badge-pill">X</span></a></span>
             {% endfor %}
-            <br><span class="float-left">{{ question.username }}</span> <span
-                class="float-right">{{ question.submisson_time }}</span>
+            <br><br><a href="{{ url_for('user_page', user_id=question.user_id) }}"
+               class="btn btn-primary float-left">{{ question.username }}&nbsp; &nbsp;
+                <i class="fas fa-tachometer-alt"></i>&nbsp; {{ question.reputation }}</a>
+            <a class="nodecor" href="#">
+                <button class="btn btn-outline-primary text-white ml-1 "><i class="fas fa-arrow-up"></i></button>
+            </a>
+            <a class="nodecor" href="#">
+                <button class="btn btn-outline-primary text-white "><i class="fas fa-arrow-down"></i></button>
+            </a>
+            {% if question.username == session.get('username') %}
+                <a class="nodecor" href="{{ url_for('delete_question', question_id=question.id) }}">
+                    <button class="btn btn-outline-primary text-white "><i class="fas fa-trash"></i></button>
+                </a>
+                <a class="nodecor" href="{{ url_for('edit_question', question_id=question.id) }}">
+                    <button class="btn btn-outline-primary text-white "><i class="fas fa-edit"></i></button>
+                </a>
+            {% endif %}
+            <span class="float-right">{{ question.submisson_time }}</span>
         </div>
     </div>
-    <a href="{{ url_for('answer_form', question_id=question.id) }}">
-        <button class="btn btn-primary text-white"><i class="fas fa-plus"></i> New answer</button>
+    <a class="nodecor" href="{{ url_for('answer_form', question_id=question.id) }}">
+        <button class="btn btn-primary text-white "><i class="fas fa-plus"></i>&nbsp;New answer</button>
     </a>
     <a href="{{ url_for('new_tag', question_id=question.id) }}" class="floor">
         <button class="btn btn-primary text-white mt-3 mb-3"><i class="fas fa-plus"></i> Add tags</button>
     </a>
-    <a href="{{ url_for('edit_question', question_id=question.id) }}">
-        <button class="btn btn-secondary text-white"><i class="fas fa-edit"></i></button>
-    </a>
-    <a href="{{ url_for('delete_question', question_id=question.id) }}">
-        <button class="btn btn-secondary text-white"><i class="fas fa-trash"></i></button>
-    </a>
-    <a href="#">
-        <button class="btn btn-secondary text-white"><i class="fas fa-arrow-up"></i></button>
-    </a>
-    <a href="#">
-        <button class="btn btn-secondary text-white"><i class="fas fa-arrow-down"></i></button>
-    </a>
     {% for item in answer %}
-        <div class="card mt-3 text-white" id="v_{{ item.id }}">
+        <div class="card mt-3 text-white {{ 'border-primary' if item.accepted }}" id="v_{{ item.id }}">
             <div class="card-header">
-                <span class="float-left">{{ item.username }} &nbsp; &nbsp; &nbsp;<i class="fas
-                fa-tachometer-alt"></i>
-                    {{ item
-                .reputation }}</span>
-                <span
-                        class="float-right">{{ item.submisson_time }}</span>
+                <a href="{{ url_for('user_page', user_id=item.user_id) }}" class="btn btn-secondary
+                float-left">{{ item.username }} &nbsp;
+                    &nbsp;<i class="fas fa-tachometer-alt"></i>&nbsp; {{ item.reputation }}</a>
+                <span class="float-right">{{ item.submisson_time }}</span>
             </div>
             <div class="card-body">
                 {{ item.message|safe }}
-                <img src="{{ item.image }}" class="rounded img-fluid d-block answer_img" alt="">
+                <img src="{{ item.image }}" class="rounded img-fluid d-block answer_img mt-3" alt="">
             </div>
             <div class="card-footer">
+                {% if session.get('username') == question.username %}
+                    <a class="btn btn-primary float-left mr-1"
+                       href="{{ url_for('accept_answer', question_id=question.id, answer_id=item.id) }}">Accept</a>
+                {% endif %}
                 <form method="post" action="{{ url_for('display_question', id=question.id) }}/vote-up" id="answer_form">
                     <span class="btn btn-primary">{{ item["vote_number"] }}</span>
                     <input type="hidden" name="answer_id" value="{{ item.id }}">
-                    <button type="submit" class="btn btn-secondary"
-                            formaction="{{ url_for('vote', question_id=question.id, type="vote-up") }}"><i
-                            class="fas fa-arrow-up"></i></button>
-                    <button type="submit" class="btn btn-secondary"
-                            formaction="{{ url_for('vote', question_id=question.id, type="vote-down") }}"><i
-                            class="fas fa-arrow-down"></i></button>
-                    <button type="submit" class="btn btn-secondary"
-                            formaction="{{ url_for('delete_answer', answer_id=item.id) }}"><i class="fas fa-trash"></i>
-                    </button>
+                    <button type="submit"
+                            class="btn btn-secondary"
+                            formaction="{{ url_for('vote', question_id=question.id, type="vote-up") }}">
+                        <i class="fas fa-arrow-up"></i></button>
+                    <button type="submit"
+                            class="btn btn-secondary"
+                            formaction="{{ url_for('vote', question_id=question.id, type="vote-down") }}">
+                        <i class="fas fa-arrow-down"></i></button>
+                    {% if item.username == session.get('username') %}
+                        <button type="submit"
+                                class="btn btn-secondary"
+                                formaction="{{ url_for('delete_answer', answer_id=item.id) }}"><i
+                                class="fas fa-trash"></i>
+                        </button>
+                    {% endif %}
                 </form>
+                {% if item.username == session.get('username') %}
+                    <a class="ml-1 btn btn-secondary" href="{{ url_for('edit_answer', answer_id=item.id) }}">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                {% endif %}
 
-                <a href="{{ url_for('edit_answer', answer_id=item.id) }}" class="ml-1">
-                    <button class="btn btn-secondary"><i class="fas fa-edit"></i></button>
-                </a>
 
             </div>
-            <hr>
+            <!--hr-->
             <div class="card-footer">
-
-                <div class="comments" id="{{ item.id }}">
-                    <h4>Comments</h4>
+                <h4 class="pointer mb-0" onclick="toggleComments('{{ item.id }}-comments')">Comments</h4>
+                <div class="comment mt-3" id="{{ item.id }}-comments">
                     {% for comment in answer_comments %}
                         {% if item.id == comment.answer_id %}
                             <div class="card text-white bg-dark mb-3 col-6 card-body flex-nowrap flex-row">
                                 {{ comment.message }}
                                 {{ comment_to_edit }}
-                                <a class="btn btn-primary text-white ml-auto"
-                                   href="{{ url_for('delete_comment', comment_id=comment.id) }}">
-                                    <i class="fas fa-trash"></i>
-                                </a>
+                                {% if item.username == session.get('username') %}
+                                    <a class="btn btn-primary text-white ml-auto" style="max-height: 2.3em"
+                                       href="{{ url_for('delete_comment', comment_id=comment.id) }}">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                {% endif %}
                             </div>
 
                         {% endif %}
                     {% endfor %}
-                </div>
-                <div class="new_comment">
-                    <form action="" method="post" class="mt-3">
-                        <div class="form-group">
-                            <textarea name="message" id="" cols="2" rows="2" class="form-control col-lg-6"
-                                      placeholder="Add comment" maxlength="140" required></textarea>
+
+                    {% if 'username' in session %}
+                        <div class="new_comment">
+                            <form action="" method="post" class="mt-3">
+                                <div class="form-group">
+                            <textarea name="message"
+                                      id=""
+                                      cols="2"
+                                      rows="2"
+                                      class="form-control col-lg-6"
+                                      placeholder="Add comment"
+                                      maxlength="140"
+                                      required></textarea>
+                                </div>
+                                <input type="hidden" name="answer_id" value="{{ item.id }}">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-secondary"><i class="fas
+                                    fa-plus"></i> New comment
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <input type="hidden" name="answer_id" value="{{ item.id }}">
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-secondary"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -109,9 +135,6 @@
 
     <a href="{{ url_for('answer_form', question_id=question.id) }}" class="floor">
         <button class="btn btn-primary text-white mt-3 mb-3"><i class="fas fa-plus"></i> New answer</button>
-    </a>
-    <a href="{{ url_for('new_tag', question_id=question.id) }}" class="floor">
-        <button class="btn btn-primary text-white mt-3 mb-3"><i class="fas fa-plus"></i> Add tags</button>
     </a>
 
 {% endblock %}

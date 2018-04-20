@@ -36,7 +36,7 @@ def display_question(id):
     question = sql_data_manager.read_question_by_id(id)[0]
     answer_comments = sql_data_manager.answer_comments(id)
     tags = sql_data_manager.read_tags(id)
-    
+
     if not question:
         abort(404)
     
@@ -51,6 +51,7 @@ def display_question(id):
 
 @app.route('/add-question')
 @app.route('/add-question', methods=['POST'])
+@is_logged
 def question_form():
     if request.method == 'POST':
         sql_data_manager.write_question(request.form.get('title'), request.form.get('message'), session["user_id"])
@@ -61,6 +62,7 @@ def question_form():
 
 @app.route('/question/<int:question_id>/new-answer')
 @app.route('/question/<int:question_id>/new-answer', methods=['POST'])
+@is_logged
 def answer_form(question_id):
     if request.method == 'POST':
         filename = ''
@@ -82,6 +84,7 @@ def answer_form(question_id):
 
 @app.route('/question/<question_id>/edit')
 @app.route('/question/<question_id>/edit', methods=['POST'])
+@is_logged
 def edit_question(question_id):
     question = sql_data_manager.read_question_by_id(question_id)[0]
     
@@ -108,6 +111,7 @@ def page_not_found(e):
 
 
 @app.route('/question/<int:question_id>/<type>', methods=['POST'])
+@is_logged
 def vote(question_id, type):
     answer_id = request.form["answer_id"]
     sql_data_manager.update_vote(answer_id, type)
@@ -115,6 +119,7 @@ def vote(question_id, type):
 
 
 @app.route('/question/<question_id>/delete')
+@is_logged
 def delete_question(question_id):
     answer_ids = sql_data_manager.get_answer_ids_by_question_id(question_id)
     for answer_id in answer_ids:
@@ -124,6 +129,7 @@ def delete_question(question_id):
 
 
 @app.route('/delete_answer/<answer_id>', methods=['POST'])
+@is_logged
 def delete_answer(answer_id):
     image_path = sql_data_manager.get_image_name_by_answer_id(answer_id)
     if UPLOAD_FOLDER in image_path:
@@ -168,6 +174,7 @@ def search():
 
 @app.route('/answer/<answer_id>/edit')
 @app.route('/answer/<answer_id>/edit', methods=['POST'])
+@is_logged
 def edit_answer(answer_id):
     answer = sql_data_manager.read_answer_by_id(answer_id)[0]
 
@@ -189,6 +196,7 @@ def edit_answer(answer_id):
 
 
 @app.route('/comment/<comment_id>/delete')
+@is_logged
 def delete_comment(comment_id):
     question_id = sql_data_manager.read_question_id_by_comment_id(comment_id)[0]['question_id']
 
@@ -199,6 +207,7 @@ def delete_comment(comment_id):
 
 @app.route('/comment/<comment_id>/edit')
 @app.route('/comment/<comment_id>/edit', methods=['POST'])
+@is_logged
 def edit_comment(comment_id):
     comment_to_edit = int(comment_id)
     question_id = sql_data_manager.read_question_id_by_comment_id(comment_id)[0]['question_id']
@@ -241,7 +250,7 @@ def new_tag(question_id):
     if request.method == 'POST':
         sql_data_manager.new_tag(request.form.get("tag"), question_id)
 
-    return render_template('new_tag.html', h1="Add tag")
+    return render_template('new_tag.html', h1="Add tag", question_id=question_id)
 
 
 @app.route('/<int:tag_id>/delete-tag')
@@ -252,6 +261,13 @@ def delete_tag(tag_id):
 
     return redirect(url_for("display_question", id=question_id['question_id']))
 
+
+
+@app.route('/accept/<question_id>/<answer_id>')
+def accept_answer(question_id, answer_id):
+    sql_data_manager.accept_answer(answer_id)
+
+    return redirect(url_for('display_question', id=question_id))
 
 
 if __name__ == '__main__':

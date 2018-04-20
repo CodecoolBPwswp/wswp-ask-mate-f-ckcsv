@@ -7,7 +7,7 @@
 
 {% block content %}
     <h1>{{ username }}</h1>
-    <h3>Reputation: {{ user_reputation }}</h3>
+    <h3><i class="fas fa-tachometer-alt"></i> Reputation: {{ user_reputation }}</h3>
 
     <h3>Questions</h3>
     <table class="table table-hover table-responsive-lg">
@@ -50,8 +50,8 @@
     <h3>Comments</h3>
     <table class="table table-hover table-responsive-lg">
         <tr class="bg-dark">
-            <th>User ID</th>
-            <th>Username</th>
+            <th class="col-2">Question ID</th>
+            <th>Message</th>
         </tr>
         {% for comment in user_comments %}
             <tr>
